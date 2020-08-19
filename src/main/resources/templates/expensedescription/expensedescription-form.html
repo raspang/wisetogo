@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>User Home</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+	<h1 class="h2 pt-3 mb-3 pb-2 border-bottom">Expense Detail</h1>
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3"
+          >
+            <div class="col">
+              <form action="#" th:action="@{/expensedescriptions/save}" th:object="${expenseDescription}" method="POST" class="needs-validation"  autocomplete="off">
+                <input type="hidden" th:field="*{id}" />
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="name">Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      placeholder=""
+                      th:field="*{name}"
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                  </div>
+                 </div>
+                  <hr class="mb-4" />
+                <button class="btn btn-primary btn-lg btn-block" type="submit">
+                  Save
+                </button>
+              </form>
+              <br>
+              <a th:href="@{/expensedescriptions/list}">Back to Name of List Expenses Description</a>
+            </div>
+          </div>
+		
+
+
+	</div>
+</body>
+
+</html>

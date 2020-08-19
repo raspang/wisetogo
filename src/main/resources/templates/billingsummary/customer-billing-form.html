@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+
+<title>Billing Form</title>
+
+</head>
+<body>
+
+
+
+	<div layout:fragment="content">
+
+		 <h1 class="h2 pt-3 mb-3 pb-2 border-bottom">Customer Billing Form</h1>
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3"
+          >
+            <div class="col">
+              <form action="#" th:action="@{/billingsummaries/save}" th:object="${billingSummary}"  method="POST" class="needs-validation" autocomplete="off">
+                <input type="hidden" th:field="*{id}" />
+                <input type="hidden" th:field="*{customer}" />
+                <div class="row">
+                  <div class="col-md-4 mb-2">
+                    <label for="fullName">Name</label>
+                 	<span th:text="${billingSummary.customer.firstName}"  class="form-control form-control-sm text-secondary font-weight-bold"></span>
+                  </div>
+                   <div class="col-md-4 mb-2">
+                    <label for="planAvailed">PPPOE Account</label>
+                    <span th:text="${billingSummary.customer.pppoeAccount}"    class="form-control form-control-sm text-secondary font-weight-bold"></span>
+                  </div>
+                  
+                  <div class="col-md-4 mb-2">
+                    <label for="date">Date</label>
+                    <input
+                      type="date"
+                      class="form-control form-control-sm text-primary font-weight-bold"
+                      id="date"
+                      th:field="*{date}"
+                      value=""
+                    />
+                    <p style="color:red" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></p>
+                  </div>
+                </div>
+                <div class="row">
+                   <div class="col-md-6 mb-3">
+                    <label>Plan Availed</label>
+                    <div th:if="${billingSummary.customer.planAvail != null}">
+    					<span th:text="${billingSummary.customer.planAvail.planStr}" class="form-control form-control-sm text-secondary font-weight-bold"></span>
+                  	</div>
+                  </div>
+                    <div class="col-md-4 mb-3">
+                    <label for="nextDueDate">Next Payment Due On</label>
+                    <input
+                      type="date"
+                      class="form-control form-control-sm text-primary font-weight-bold"
+                      id="nextDueDate"
+                      th:field="*{nextDueDate}"
+                      value=""
+                    />
+                    <p style="color:red" th:if="${#fields.hasErrors('nextDueDate')}" th:errors="*{nextDueDate}"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2 mb-3">
+                	<button type="button"  class="btn btn-default border text-primary"  data-toggle="modal" data-target="#exampleModalCenter">
+					 	<span data-feather="plus-circle"></span>Add
+					</button>
+					  <a th:href="@{/billingsummaries/showFormForAddClear(customerId=${customer.id})}" class="btn btn-default border text-danger">
+                      <span data-feather="minus-circle"></span>Clear</a>
+  				 </div>
+ 
+                </div>
+                <table class="col-md-12 table">
+                  <tr>
+                    <th>Description</th>
+                    <th>Detail</th>
+                    <th>Amount</th>
+                  </tr>
+                   <tr th:each="temp : ${paymentDetails}">
+                    <td>
+                    	<span th:text="${temp.paymentDescription}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${temp.remarks}"></span>
+                    </td>
+                    <td>
+                     	<span th:text="${temp.amount}"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    
+                    <td>
+                      <label for="totalAmount">Total</label>
+                      <input type="number" id="totalAmount" th:field="*{totalAmount}" class="text-mute font-weight-bold form-control" readonly/>
+                    </td>
+                  
+                  </tr>
+                </table>
+				<p style="color:red" th:if="${#fields.hasErrors('paymentDetails')}" th:errors="*{paymentDetails}"></p>
+                <hr class="mb-4" />    	
+                	<button class="btn btn-primary btn-lg btn-block" type="submit">Save</button>                  	
+              </form>
+              <br>
+			   <a th:href="@{/billingsummaries/{customerId}/list(customerId=${customer.id})}" >Back to Customer Billings List</a>
+            </div>
+          </div>
+			
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <h5 class="modal-title" id="exampleModalCenterTitle">Payment Detail</h5>
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					        </button>
+					      </div>
+					      
+					      
+					       <form action="#" th:action="@{/billingsummaries/showFormForAddDetail}"  th:object="${billingSummary}"  method="GET" class="needs-validation" autocomplete="off">
+              				   <div class="modal-body">
+					           <input type="hidden" name="customerId" th:value="${customer.id}" />
+              					 <div class="row">
+              						 <div class="col-md-4 mb-3">
+						                    <label for="paymentDescriptionId">Payment Description</label>
+											<select name="paymentDescriptionId" class="form-control" required>
+												<option selected value="">Choose...</option>
+												<option th:each="paymentDesc : ${paymentDescriptions}"
+                           							 th:value="${paymentDesc.id}"
+                           								 th:utext="${paymentDesc.name}"/>
+											</select>
+										  </div>
+									       <div class="col-md-4 mb-3">
+						                    <label for="remarks">Remarks</label>
+						                    <input
+						                      type="text"
+						                      class="form-control"
+						                      id="remarks"
+						                      name="remarks"
+						                      placeholder=""
+						                    />
+						                    <div class="invalid-feedback">
+						                      Valid first name is required.
+						                    </div>
+						                  </div>
+						                  
+						                  <div class="col-md-4 mb-3">
+						                    <label for="amount">Amount</label>
+						                    <input
+						                      type="number"
+						                      class="form-control"
+						                      id="amount"
+						                      name="amount"
+						                      placeholder=""
+						                      value=""
+						                      required
+						                    />
+
+						                  </div>
+									</div>
+                	      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        <button type="submit" class="btn btn-primary">Save</button>
+					      </div>
+					      </form>
+					    </div>
+					  </div>
+					</div>
+
+
+
+
+	</div>
+</body>
+
+</html>

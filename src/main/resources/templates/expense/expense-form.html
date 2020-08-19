@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>User Home</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+	
+ <h1 class="h2 pt-3 mb-3 pb-2 border-bottom">Expense Form</h1>
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3"
+          >
+            <div class="col">
+              <form action="#" th:action="@{/expenses/save}" th:object="${expense}"  method="POST" class="needs-validation" autocomplete="off">
+                <input type="hidden" th:field="*{id}" />
+        
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                    <label for="date">Date</label>
+                    <input
+                      type="date"
+                      class="form-control form-control-sm text-primary font-weight-bold"
+                      id="date"
+                      th:field="*{date}"
+                     />
+                     <p style="color:red" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2 mb-3">
+                	<button type="button"  class="btn btn-default border text-primary"  data-toggle="modal" data-target="#exampleModalCenter">
+					 	<span data-feather="plus-circle"></span>Add
+					</button>
+					  <a th:href="@{/expenses/showFormForAddClear}" class="btn btn-default border text-danger">
+                      <span data-feather="minus-circle"></span>Clear</a>
+  				 </div>
+ 
+                </div>
+                <table class="col-md-12 table">
+                  <tr>
+                    <th>Description</th>
+                    <th>Detail</th>
+                    <th>Amount</th>
+                  </tr>
+                   <tr th:each="temp : ${expenseDetails}">
+                    <td>
+                    	<span th:text="${temp.expenseDescription}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${temp.remarks}"></span>
+                    </td>
+                    <td>
+                     	<span th:text="${temp.amount}"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    
+                    <td>
+                      <label for="totalAmount">Total</label>
+                      <input type="number" id="totalAmount" th:field="*{totalAmount}" class="text-mute font-weight-bold form-control" readonly/>
+                    </td>
+                  
+                  </tr>
+                  
+                </table>
+				<p style="color:red" th:if="${#fields.hasErrors('expenseDetails')}" th:errors="*{expenseDetails}"></p>
+                <hr class="mb-4" />    	
+                	<button class="btn btn-primary btn-lg btn-block" type="submit">Save</button>                  	
+              </form>
+              <br>
+			   <a th:href="@{/expenses/list}" >Back to Expenses List</a>
+            </div>
+          </div>
+			
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <h5 class="modal-title" id="exampleModalCenterTitle">Expense Detail</h5>
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					          <span aria-hidden="true">&times;</span>
+					        </button>
+					      </div>
+					      
+					      
+					       <form action="#" th:action="@{/expenses/showFormForAddDetail}"  th:object="${expense}"  method="GET" class="needs-validation" autocomplete="off">
+              				   <div class="modal-body">
+					         
+              					 <div class="row">
+              						 <div class="col-md-4 mb-3">
+						                    <label for="paymentDescriptionId">Payment Description</label>
+											<select name="expenseDescriptionId" class="form-control" required>
+												<option selected value="">Choose...</option>
+												<option th:each="expenseDesc : ${expenseDescriptions}"
+                           							 th:value="${expenseDesc.id}"
+                           								 th:text="${expenseDesc.name}"/>
+											</select>
+										  </div>
+									       <div class="col-md-4 mb-3">
+						                    <label for="remarks">Remarks</label>
+						                    <input
+						                      type="text"
+						                      class="form-control"
+						                      id="remarks"
+						                      name="remarks"
+						                      placeholder=""
+						                    />
+						                  </div>
+						                  
+						                  <div class="col-md-4 mb-3">
+						                    <label for="amount">Amount</label>
+						                    <input
+						                      type="number"
+						                      class="form-control"
+						                      id="amount"
+						                      name="amount"
+						                      placeholder=""
+						                      value=""
+						                      required
+						                    />
+										
+						                  </div>
+									</div>
+                	      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        <button type="submit" class="btn btn-primary">Save</button>
+					      </div>
+					      </form>
+					    </div>
+					  </div>
+					</div>
+
+	</div>
+</body>
+
+</html>

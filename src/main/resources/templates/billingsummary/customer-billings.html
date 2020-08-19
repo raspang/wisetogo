@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>Customer List</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div
+			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<div>
+				<h3 class="display-4">
+					<small th:text="${customer.lastName}"></small>, <small
+						th:text="${customer.firstName}"></small>
+				</h3>
+				<h2 class="lead">
+					PPPOE Account: <span th:text="${customer.pppoeAccount}"></span>
+				</h2>
+			</div>
+
+		</div>
+		
+			
+			<div class="row">
+				  <div class="col-md-12 mb-3">
+			  		<label for="notpaid">
+						<input type="radio" name="p" id="notpaid"  value="false" th:onclick="'window.location.href=\'/billingsummaries/'+${customer.id}+'/list?p=false\''"  th:checked="${!p}" /> List of Billings
+					</label>
+			  		<label for="paid">
+						<input type="radio" name="p" id="paid"  value="true"  th:onclick="'window.location.href=\'/billingsummaries/'+${customer.id}+'/list?p=true\''"  th:checked="${p}" /> Receipts
+						</label>
+					</div>
+			</div>
+
+		
+		
+		
+		<a th:href="@{/billingsummaries/{customerId}/showFormForAdd(customerId=${customer.id})}"
+			class="btn btn-primary m-2">Add Charge</a>
+
+		<div class="table-responsive">
+			<table class="table table-sm">
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>Details</th>
+						<th>Next Payment Due Date</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="temp : ${billingSummaries} ">
+						<td><i><span th:text="${temp.dateStr}"></span></i></td>
+						<td>
+							<table class="table table-sm">
+							    <tbody>
+							    	 <tr>
+							      		<td>Description</td>
+							      		<td>Remarks</td>
+							      		<td>Amount</td>
+							    	</tr>
+								    <tr th:each="paymentDetail : ${temp.paymentDetails}">
+								      <td><i><span th:text="${paymentDetail.paymentDescription}"></span></i></td>
+								      <td><i><span th:text="${paymentDetail.remarks}"></span></i></td>
+								      <td><i><span th:text="${paymentDetail.amount}"></span></i></td>
+								    </tr>
+								    <tr>
+							      		<th colspan="2"></th>
+							      		<th><span th:text="${temp.totalAmount}"></span></th>
+							    	</tr>
+								 </tbody>
+							</table>
+						</td>			
+						<td class="text-center">
+							<th:block th:if="${!temp.isPaid}">
+								<th:block th:if="${temp.isNextDueDate}">
+									<i><span th:text="${temp.nextDueDateStr}"></span></i>
+								</th:block>
+								<th:block th:if="${!temp.isNextDueDate}">
+									<b class="text-danger">Due Immediately</b>
+								</th:block>		
+							</th:block>		
+							<th:block th:if="${temp.isPaid}">
+								<i class="text-success">Paid</i>
+							</th:block>		
+						</td>
+						<td>
+							<th:block th:if="${!temp.isPaid}">
+								<a class="btn btn-sm btn-success text-white" th:href="@{/billingsummaries/{customerId}/pay(customerId=${customer.id},billingSummaryId=${temp.id})}">Pay</a>
+							</th:block>
+						</td>
+						<td>
+							<th:block th:if="${!temp.isPaid}">
+								<a class="btn btn-sm btn-secondary text-white">Billing</a>
+							</th:block>
+							<th:block th:if="${temp.isPaid}">
+								<a  class="btn btn-sm btn-outline-secondary " role="button">Receipt</a>
+							</th:block>
+						</td>
+
+					</tr>
+
+				</tbody>
+			</table>
+			
+						<!-- customers pagination -->
+			<nav aria-label="Pagination" th:if="${billingSummaries.totalPages gt 0}">
+			    <ul class="pagination justify-content-center font-weight-medium">
+			        <li class="page-item" th:classappend="${billingSummaries.number eq 0} ? 'disabled'">
+			            <a class="page-link svg-icon"
+			               th:href="@{/billingsummaries/{customerId}/list?page={id}(id=${billingSummaries.number lt 2 ? 1 : billingSummaries.number},p=${p},customerId=${customer.id})}"
+			               aria-label="Previous"
+			               title="Previous Page" rel="tooltip">
+			                <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20"></span>
+			            </a>
+			        </li>
+			        <li class="page-item" th:classappend="${i eq billingSummaries.number + 1} ? 'active'"
+			            th:each="i : ${#numbers.sequence( billingSummaries.number + 1, billingSummaries.totalPages > 10 + billingSummaries.number ? billingSummaries.number + 10 : billingSummaries.totalPages, 1)}">
+			            <a class="page-link" th:href="@{/billingsummaries/{customerId}/list?page={id}(id=${i},p=${p},customerId=${customer.id})}" th:text="${i}"
+			               th:title="${'Page '+ i}"
+			               rel="tooltip"></a>
+			        </li>
+			        <li class="page-item disabled" th:if="${billingSummaries.number + 10 < billingSummaries.totalPages}">
+			            <a class="page-link svg-icon" href="#">
+			                <span data-feather="more-horizontal" width="20" height="20"></span>
+			            </a>
+			        </li>
+			        <li class="page-item" th:classappend="${billingSummaries.number + 1 eq billingSummaries.totalPages} ? 'disabled'">
+			            <a class="page-link svg-icon" th:href="@{/billingsummaries/{customerId}/list?page={id}(id=${billingSummaries.number + 2},p=${p},customerId=${customer.id})}"
+			               aria-label="Next"
+			               title="Next Page" rel="tooltip">
+			                <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20"></span>
+			            </a>
+			        </li>
+			    </ul>
+			</nav>
+			
+			
+		</div>
+	</div>
+</body>
+
+</html>

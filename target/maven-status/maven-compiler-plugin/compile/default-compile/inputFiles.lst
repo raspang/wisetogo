@@ -1,0 +1,11 @@
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\security\CustomUserDetailsService.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\entities\Role.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\repositories\MessageRepository.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\repositories\UserRepository.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\config\WebConfig.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\config\WebSecurityConfig.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\web\HomeController.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\Wise2goApplication.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\entities\Message.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\security\AuthenticatedUser.java
+D:\eclipse-workspace-spring\wise2go\src\main\java\com\nzp\wise2go\entities\User.java

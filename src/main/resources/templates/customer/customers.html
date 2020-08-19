@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>Customer List</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div
+			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<h1 class="h2">Customers <span th:text="${username}">customer</span></h1>
+
+		</div>
+
+		<form th:action="@{/customers/list}" method="GET">
+			<div class="row">
+				  <div class="col-md-5 mb-3">
+			  		
+					<input type="search" class="form-control form-control-dark w-100 border"
+					placeholder="Seach Last Name, First Name or PPPOE Account"
+					name="keyword" id="keyword" size="50" th:value="${keyword}"/>
+
+				</div>
+
+
+			</div>
+		</form>
+		
+		<a th:href="@{/customers/showFormForAdd}"  class="btn btn-primary m-2">Add Customer</a>
+
+	
+		<div class="table-responsive">
+			<table class="table table-striped table-sm">
+				<thead>
+					<tr>
+						<th>PPPOE Account</th>
+						<th>Last Name</th>
+						<th>First Name</th>
+						<th>Plan Availed</th>
+						<th>Address</th>
+						<th>Due Date</th>
+						<th>Status</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+		
+					<tr th:each="temp : ${customers}">
+						<td><span th:text="${temp.pppoeAccount}">pppoeAccount</span></td>
+						<td><span th:text="${temp.lastName}">lastName</span></td>
+						<td><span th:text="${temp.firstName}">firstName</span></td>
+						<td>
+						<th:block th:if="${temp.planAvail != null}">
+							<span th:text="${temp.planAvail.planStr}">Plan</span>
+						</th:block>
+						</td>
+						<td><span th:text="${temp.address}">address</span></td>
+						<td><span th:text="${temp.dueDateStr}">Due date Payment</span></td>
+						<td class=" d-flex align-self-baseline">
+							<div th:if="${!temp.active}" class="small text-secondary">
+								Deactivate on <span th:text="${temp.dateDeactivateStr}">Inactive</span>
+							</div>
+							<th:block th:if="${temp.active}">
+								<span>Active</span>
+							</th:block>			
+						</td>
+
+						<td>
+							<div class="text-center btn-group-sm"
+								style="color: white; display: flex; justify-content: space-evenly;">
+								<a th:href="@{/billingsummaries/{customerId}/list(customerId=${temp.id})}"
+									class="btn-sm btn-success">Statement of Account</a> &nbsp;
+								<a th:href="@{/customers/showFormForUpdate(customerId=${temp.id})}"
+									class="btn-sm btn-warning">Edit </a> &nbsp;	
+							</div>
+						</td>
+					</tr>
+					
+				</tbody>
+			</table>
+			
+			<!-- customers pagination -->
+			<nav aria-label="Pagination" th:if="${customers.totalPages gt 0}">
+			    <ul class="pagination justify-content-center font-weight-medium">
+			        <li class="page-item" th:classappend="${customers.number eq 0} ? 'disabled'">
+			            <a class="page-link svg-icon"
+			               th:href="@{/customers/list?page={id}(id=${customers.number lt 2 ? 1 : customers.number},keyword=${keyword})}"
+			               aria-label="Previous"
+			               title="Previous Page" rel="tooltip">
+			                <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20"></span>
+			            </a>
+			        </li>
+			        <li class="page-item" th:classappend="${i eq customers.number + 1} ? 'active'"
+			            th:each="i : ${#numbers.sequence( customers.number + 1, customers.totalPages > 10 + customers.number ? customers.number + 10 : customers.totalPages, 1)}">
+			            <a class="page-link" th:href="@{/customers/list?page={id}(id=${i},pppoe=${pppoe},keyword=${keyword})}" th:text="${i}"
+			               th:title="${'Page '+ i}"
+			               rel="tooltip"></a>
+			        </li>
+			        <li class="page-item disabled" th:if="${customers.number + 10 < customers.totalPages}">
+			            <a class="page-link svg-icon" href="#">
+			                <span data-feather="more-horizontal" width="20" height="20"></span>
+			            </a>
+			        </li>
+			        <li class="page-item" th:classappend="${customers.number + 1 eq customers.totalPages} ? 'disabled'">
+			            <a class="page-link svg-icon" th:href="@{/customers/list?page={id}(id=${customers.number + 2},keyword=${keyword})}"
+			               aria-label="Next"
+			               title="Next Page" rel="tooltip">
+			                <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20"></span>
+			            </a>
+			        </li>
+			    </ul>
+			</nav>
+
+		</div>
+
+
+	</div>
+</body>
+
+</html>

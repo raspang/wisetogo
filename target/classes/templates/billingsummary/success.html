@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>Customer List</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="container mt-5">
+			<div class="jumbotron">
+				<div class="container">
+					<h1 class="display-5 text-success">Thanks!</h1>
+					<p class="text-secondary">Receipt has been successfully
+						created.</p>
+					<p>
+						<a class="btn btn-outline-secondary"
+							th:href="@{/billingsummaries/{customerId}/list(customerId=${customer.id})}"
+							role="button">Back to Customer Billings List</a> <a
+							class="btn btn-primary " href="#" role="button">View receipt</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>User Home</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+	<div
+			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<h1 class="h2">Expense Details</h1>
+<!-- 			<div class="btn-toolbar mb-2 mb-md-0">
+				<div class="btn-group mr-2">
+					<button type="button" class="btn btn-sm btn-outline-secondary">
+						PDF</button>
+				</div>
+			</div> -->
+		</div>
+		<a th:href="@{/expensedescriptions/showFormForAdd}"
+			class="btn btn-primary m-2">Add</a>
+
+		<div class="table-responsive">
+			<table class="table table-striped table-sm">
+				<thead>
+					<tr>
+						<th>Description</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:if="${expenseDescriptions.empty}">
+           				 <td class="text-center" colspan="2">Empty List</td>
+       				 </tr>
+        
+					<tr th:each="temp : ${expenseDescriptions}">
+						<td><span th:text="${temp.name}">name</span></td>
+
+						<td>
+ 							<div class="text-center btn-group-sm"
+								style="color: white; display: flex; justify-content: space-evenly;">
+						 		
+						
+									<a th:href="@{/expensedescriptions/showFormForUpdate(expenseDescriptionId=${temp.id})}"
+									class="btn-sm btn-warning">Edit </a>  
+									
+								<a th:href="@{/expensedescriptions/delete(expenseDescriptionId=${temp.id})}" 
+									class="btn-sm btn-danger"
+									onclick="if (!(confirm('Are you sure you want to delete this?'))) return false">Delete </a>
+							</div> 
+						</td>
+					</tr>
+					
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+
+</html>

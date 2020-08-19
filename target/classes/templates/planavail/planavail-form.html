@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>User Home</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+	<h1 class="h2 pt-3 mb-3 pb-2 border-bottom">Plan Avails Available</h1>
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3"
+          >
+            <div class="col">
+              <form action="#" th:action="@{/planavails/save}" th:object="${planAvail}" method="POST" class="needs-validation" autocomplete="off">
+                <input type="hidden" th:field="*{id}" />
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="type">Type</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="type"
+                      placeholder=""
+                      th:field="*{type}"
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></p>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="name">Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      placeholder="Optional"
+                       th:field="*{name}"
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="maxMbps">Maximum mbps</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="maxMbps"
+                      placeholder="Up to *mbps"
+                      th:field="*{maxMbps}"
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('maxMbps')}" th:errors="*{maxMbps}"></p>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="price">Price</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="price"
+                      placeholder=""
+                      th:field="*{price}"
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
+                  </div>
+                </div>
+                <hr class="mb-4" />
+                <button class="btn btn-primary btn-lg btn-block" type="submit">
+                  Save
+                </button>
+              </form>
+              <br>
+              <a th:href="@{/planavails/list}">Back to Plan Avails List</a>
+            </div>
+          </div>
+
+	</div>
+</body>
+
+</html>

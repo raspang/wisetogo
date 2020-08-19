@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>Customer Form</title>
+</head>
+<body>
+	<div layout:fragment="content">
+	 <h1 class="h2 pt-3 mb-3 pb-2 border-bottom">Customer Form</h1>
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
+            <div class="col">
+              <form action="#" th:action="@{/customers/save}" th:object="${customer}"  method="POST" class="needs-validation" novalidate autocomplete="off">
+               	<input type="hidden" th:field="*{id}" />
+               	<input type="hidden" th:field="*{dateDeactivate}" />
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="firstName">First name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="firstName"
+                      th:field="*{firstName}"
+                      placeholder=""
+                      value=""
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+                  </div>
+                   <div class="col-md-4 mb-3">
+                    <label for="middleName">Middle name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="middleName"
+                      th:field="*{middleName}"
+                      placeholder=""
+                      value=""
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}"></p>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="lastName">Last name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="lastName"
+                      th:field="*{lastName}"
+                      placeholder=""
+                      value=""
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+                  </div>
+
+                  <div class="col-md-12 mb-3">
+                    <label for="address">Address</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="address"
+                      th:field="*{address}"
+                      placeholder="1234 Main St"
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
+                  </div>
+                 </div>
+                  <div class="row">
+                  
+                   <div class="col-md-4 mb-3">
+                    <label for="email">Email</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      th:field="*{email}"
+                      placeholder="Optional"
+                      value=""
+                      
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                  </div>
+                  
+                   <div class="col-md-4 mb-3">
+                    <label for="contactNo">Contact No</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="contactNo"
+                      th:field="*{contactNo}"
+                      placeholder=""
+                      value=""
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('contactNo')}" th:errors="*{contactNo}"></p>
+                  </div>
+                  </div>
+			 	<div class="row">
+                  <div class="col-md-12 mb-3">
+                    <label for="planAvail">Plan Availed</label>
+                    <select
+                      class="custom-select d-block w-100"
+                      id="planAvail"
+                       th:field="*{planAvail}"
+                      required
+                    >
+                      <option value="">Choose...</option>
+                      <option th:each="temp : ${planAvails}"
+                            th:value="${temp.id}"
+                            th:text="${temp.planStr}"/>
+                    </select>
+                    <p style="color:red" th:if="${#fields.hasErrors('planAvail')}" th:errors="*{planAvail}"></p>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="pppoeAccount">PPPOE Account</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="pppoeAccount"
+                      th:field="*{pppoeAccount}"
+                      placeholder=""
+                      value=""
+                      required
+                    />
+					<p style="color:red" th:if="${#fields.hasErrors('pppoeAccount')}" th:errors="*{pppoeAccount}"></p>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                  <label for="active">Account</label>
+                  <div class="form-control" >
+                  Active
+                    <input
+                      type="radio"
+                    
+                      id="active1"
+                      name="active1"
+                      value="true"
+                      th:field="*{active}"
+                      checked
+                    />
+                    Inactive
+                    <input
+                      type="radio"
+                     
+                      name="active2"
+                      id="active2"
+                      th:field="*{active}"
+                      value="false"
+                    />
+                    </div>
+                    <p style="color:red" th:if="${#fields.hasErrors('active')}" th:errors="*{active}"></p>
+                  </div>
+                  
+                </div>
+                <hr class="mb-4" />
+                <button class="btn btn-primary btn-lg btn-block" type="submit">
+                  Save
+                </button>
+               
+				</form>
+				<br>
+				 <a th:href="@{/customers/list}" >Back to Customer List</a>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

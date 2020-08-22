@@ -1,11 +1,12 @@
 package com.nzp.wise2go.web;
 
+import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -23,8 +24,13 @@ import com.nzp.wise2go.entities.Customer;
 import com.nzp.wise2go.entities.BillingSummary;
 import com.nzp.wise2go.entities.PaymentDescription;
 import com.nzp.wise2go.entities.PaymentDetail;
+import com.nzp.wise2go.exception.ResourceNotFoundException;
 import com.nzp.wise2go.repositories.CustomerRepository;
 import com.nzp.wise2go.repositories.PaymentDescriptionRepository;
+import com.nzp.wise2go.service.ReportService;
+
+import net.sf.jasperreports.engine.JRException;
+
 import com.nzp.wise2go.repositories.BillingSummaryRepository;
 
 
@@ -42,6 +48,9 @@ public class BillingSummaryController
 	
 	@Autowired
 	private BillingSummaryRepository billingSummaryRepository;
+	
+	@Autowired
+	private ReportService reportService;
 	
 
 	@GetMapping("/{customerId}/list")
@@ -79,13 +88,9 @@ public class BillingSummaryController
 	
 	@GetMapping("/{customerId}/showFormForAdd")
 	public String showFormForAdd(@PathVariable Long customerId,
-			@ModelAttribute("billingSummary") BillingSummary billingSummary,
-		
+			@ModelAttribute("billingSummary") BillingSummary billingSummary,		
 			Model theModel) {
 
-
-	
-		
 		if(billingSummary == null )
 			return "redirect:/billingsummaries/list";
 		
@@ -188,11 +193,15 @@ public class BillingSummaryController
 	}
 	
 
-	@GetMapping("/delete")
-	public String delete(@RequestParam("billingSummaryId") Long theId) {
-		billingSummaryRepository.deleteById(theId);	
-		return "redirect:/billingsummaries/list";
-	}
+	/*
+	 * @GetMapping("/delete") public String delete(@RequestParam("billingSummaryId")
+	 * Long theId) { billingSummaryRepository.deleteById(theId);
+	 * 
+	 * return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+
+	 * "/list"; }
+	 */
+	
+
 	
 	@GetMapping("/{customerId}/pay")
 	public String showBillingSummaries(@PathVariable Long customerId, @RequestParam("billingSummaryId") Long theId, Model model) {
@@ -221,10 +230,17 @@ public class BillingSummaryController
 	
 	 @ModelAttribute("billingSummary")
 	 public BillingSummary getBillingSummary(@PathVariable Long customerId) {
-		 Optional<Customer> customer = customerRepository.findById(customerId);
-		 Customer theCustomer = customer.orElse(null);		
+		 Customer theCustomer  = customerRepository.findById(customerId)
+				 .orElseThrow(() -> new ResourceNotFoundException("Customer", "id", customerId));		
 		 return new BillingSummary(theCustomer);
 	 }
 
+	 
+	@GetMapping("/report/{customerId}/{format}")
+	public String generateReport(@PathVariable String format, @PathVariable Long customerId) 
+	    		throws FileNotFoundException, JRException {
+	     return reportService.exportReport(format, customerId);
+	}
+		
 
 }

@@ -96,6 +96,9 @@ public class Customer extends UserDateAudit{
 	@Transient
 	private String dateDeactivateStr;
 	
+	@Transient
+	private String fullName;
+	
 	public Customer() {	
 		this.active = true;
 		this.enable = true;
@@ -262,6 +265,14 @@ public class Customer extends UserDateAudit{
 	}
 	
 	
+
+	public String getFullName() {
+		return lastName+", "+firstName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 
 	@Override
 	public String toString() {

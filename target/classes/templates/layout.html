@@ -111,7 +111,12 @@
 			<script th:src="@{'/assets/js/feather.min.js'}"></script>
 			<script th:src="@{'/assets/js/Chart.min.js'}"></script>
 			<script th:src="@{'/assets/js/dashboard.js'}"></script>
-			
+
+			<script>
+				$(".alert").delay(4000).slideUp(200, function() {
+				    $(this).alert('close');
+				});
+			</script>
 			
 </body>
 </html>

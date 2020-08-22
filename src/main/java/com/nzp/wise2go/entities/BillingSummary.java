@@ -69,8 +69,10 @@ public class BillingSummary extends UserDateAudit {
 
 	@Transient
 	private String dateStr;
+	
 	@Transient
 	private String nextDueDateStr;
+	
 	
 	public BillingSummary() {
 		this.date = LocalDate.now();
@@ -166,6 +168,7 @@ public class BillingSummary extends UserDateAudit {
 	public void setIsPaid(Boolean isPaid) {
 		this.isPaid = isPaid;
 	}
+	
 
 	public void add(PaymentDetail paymentDetail) {
 		paymentDetails.add(paymentDetail);

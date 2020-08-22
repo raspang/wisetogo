@@ -21,6 +21,12 @@
 					PPPOE Account: <span th:text="${customer.pppoeAccount}"></span>
 				</h2>
 			</div>
+			<div class="btn-toolbar mb-2 mb-md-0" th:if="${!p}">
+				<div class="btn-group mr-2">
+					<a class="btn btn-sm btn-outline-secondary" th:href="@{/billingsummaries/report/{customerId}/pdf(customerId=${customer.id})}" target="_blank">
+						PDF Billing</a>
+				</div>
+			</div> 
 
 		</div>
 		
@@ -41,6 +47,15 @@
 		
 		<a th:href="@{/billingsummaries/{customerId}/showFormForAdd(customerId=${customer.id})}"
 			class="btn btn-primary m-2">Add Charge</a>
+			
+		
+
+		
+		<th:block th:if="${!p}">
+			<a class="btn  btn-success m-2 text-white" th:href="@{/billingsummaries/{customerId}/pay(customerId=${customer.id})}" 
+				onclick="if (!(confirm('Is it going to settle payment?'))) return false">Settle Payment</a>
+		</th:block>
+		
 
 		<div class="table-responsive">
 			<table class="table table-sm">
@@ -50,7 +65,7 @@
 						<th>Details</th>
 						<th>Next Payment Due Date</th>
 						<th></th>
-						<th></th>
+
 					</tr>
 				</thead>
 				<tbody>
@@ -76,7 +91,7 @@
 								 </tbody>
 							</table>
 						</td>			
-						<td class="text-center">
+						<td >
 							<th:block th:if="${!temp.isPaid}">
 								<th:block th:if="${temp.isNextDueDate}">
 									<i><span th:text="${temp.nextDueDateStr}"></span></i>
@@ -89,15 +104,9 @@
 								<i class="text-success">Paid</i>
 							</th:block>		
 						</td>
+
 						<td>
-							<th:block th:if="${!temp.isPaid}">
-								<a class="btn btn-sm btn-success text-white" th:href="@{/billingsummaries/{customerId}/pay(customerId=${customer.id},billingSummaryId=${temp.id})}">Pay</a>
-							</th:block>
-						</td>
-						<td>
-							<th:block th:if="${!temp.isPaid}">
-								<a class="btn btn-sm btn-secondary text-white">Billing</a>
-							</th:block>
+
 							<th:block th:if="${temp.isPaid}">
 								<a  class="btn btn-sm btn-outline-secondary " role="button">Receipt</a>
 							</th:block>

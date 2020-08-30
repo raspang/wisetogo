@@ -295,14 +295,14 @@
 				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="329" width="90" height="20" uuid="bc3ad8f4-8331-4ad6-8ece-ef7725c71b2b"/>
+				<reportElement x="100" y="337" width="90" height="20" uuid="bc3ad8f4-8331-4ad6-8ece-ef7725c71b2b"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{statementDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="20" y="330" width="80" height="19" uuid="c572f9c2-3a78-4be2-9da7-6253ce11dc08"/>
+				<reportElement x="20" y="338" width="80" height="19" uuid="c572f9c2-3a78-4be2-9da7-6253ce11dc08"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="false"/>
 				</textElement>
@@ -315,6 +315,14 @@
 				</textElement>
 				<text><![CDATA[Subscriber:]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="364" y="318" width="176" height="20" uuid="b5c9e7a4-82d8-4e3a-a7b3-275b88e9ba0b"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{totalCharges}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 </jasperReport>

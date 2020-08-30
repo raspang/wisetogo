@@ -17,6 +17,6 @@ public interface BillingSummaryRepository extends JpaRepository<BillingSummary, 
 	
 	List<BillingSummary> findByCustomerAndIsPaidOrderByIdDesc(Customer customer, Boolean isPaid );
 	
-	BillingSummary findOneByIsNextDueDate(Boolean isNextDueDate);
+	BillingSummary findFirstByIsNextDueDate(Boolean isNextDueDate);
 
 }

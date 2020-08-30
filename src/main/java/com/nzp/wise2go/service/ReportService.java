@@ -12,7 +12,7 @@ import org.springframework.util.ResourceUtils;
 
 import com.nzp.wise2go.entities.BillingSummary;
 import com.nzp.wise2go.entities.Customer;
-import com.nzp.wise2go.entities.PaymentDetail;
+import com.nzp.wise2go.entities.BillingDetail;
 import com.nzp.wise2go.exception.ResourceNotFoundException;
 import com.nzp.wise2go.repositories.BillingSummaryRepository;
 import com.nzp.wise2go.repositories.CustomerRepository;
@@ -50,13 +50,15 @@ public class ReportService {
         BillingSummary currentCharges = billingSummaries.get(0);    
         Double amountBalance = 0d;
         Double rebate = 0d;
-        for(PaymentDetail paymentDetail : currentCharges.getPaymentDetails()) {
+        
+        /*
+        for(BillingDetail paymentDetail : currentCharges.getPaymentDetails()) {
         	if(paymentDetail.getPaymentDescription().equalsIgnoreCase("Rebate"))
         		rebate += paymentDetail.getAmount();
         	else
         		amountBalance += paymentDetail.getAmount();
         }
-        	
+        	*/
         
         // More than one billing
         String prevDueDate = "Thank You";

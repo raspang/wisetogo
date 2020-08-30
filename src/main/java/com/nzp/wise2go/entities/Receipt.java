@@ -1,7 +1,10 @@
 package com.nzp.wise2go.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,15 +12,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nzp.wise2go.entities.audit.UserDateAudit;
 
 @Entity
@@ -41,12 +41,10 @@ public class Receipt extends UserDateAudit {
 	@Column(name="paid_date")
 	private LocalDate datePaid;
 	
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "billingSummary_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-	private BillingSummary billingSummary;
-
+	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn(name="receipt_id", nullable = true)
+	private List<BillingSummary> billingSummaries;
+	
 	public Long getId() {
 		return id;
 	}
@@ -71,20 +69,23 @@ public class Receipt extends UserDateAudit {
 		this.datePaid = datePaid;
 	}
 
-	public BillingSummary getBillingSummary() {
-		return billingSummary;
+	public List<BillingSummary> getBillingSummaries() {
+		return billingSummaries;
 	}
 
-	public void setBillingSummary(BillingSummary billingSummary) {
-		this.billingSummary = billingSummary;
+	public void setBillingSummaries(List<BillingSummary> billingSummaries) {
+		this.billingSummaries = billingSummaries;
 	}
+
+
 
 	@Override
 	public String toString() {
-		return "Receipt [id=" + id + ", totalAmount=" + totalAmount + ", datePaid=" + datePaid + ", billingSummary="
-				+ billingSummary + "]";
+		return "Receipt [id=" + id + ", totalAmount=" + totalAmount + ", datePaid=" + datePaid + ", billingSummaries="
+				+ billingSummaries + "]";
 	}
-    
+
+
     
     
 	

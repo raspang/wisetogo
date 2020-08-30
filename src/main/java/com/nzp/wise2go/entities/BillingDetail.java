@@ -1,8 +1,8 @@
 package com.nzp.wise2go.entities;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,17 +10,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name="payment_detail")
-public class PaymentDetail {
+@Table(name="billing_detail")
+public class BillingDetail {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull(message="is required")
+	@NotEmpty(message = "is required") 
 	@Column(name="payment_description")
 	private String paymentDescription;
 	
@@ -28,25 +30,25 @@ public class PaymentDetail {
 	
 	private String remarks;
 	
-	@NotNull(message="is required")
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name="billing_summary_id")
+	@OnDelete(action = OnDeleteAction.CASCADE) 
 	private BillingSummary billingSummary;
 	
 	@Transient
 	private String displayDetailStr;
 
-	public PaymentDetail() {
+	public BillingDetail() {
 		
 	}
-	
-	public PaymentDetail(String paymentDescription, Double amount, String remarks) {
+
+	public BillingDetail(String paymentDescription, Double amount, String remarks,
+			BillingSummary billingSummary) {
 		this.paymentDescription = paymentDescription;
 		this.amount = amount;
 		this.remarks = remarks;
+		this.billingSummary = billingSummary;
 	}
-
-
 
 	public Long getId() {
 		return id;
@@ -80,8 +82,6 @@ public class PaymentDetail {
 		this.paymentDescription = paymentDescription;
 	}
 
-
-	
 	public BillingSummary getBillingSummary() {
 		return billingSummary;
 	}
@@ -100,9 +100,10 @@ public class PaymentDetail {
 
 	@Override
 	public String toString() {
-		return "PaymentDetail [id=" + id + ", paymentDescription=" + paymentDescription + ", amount=" + amount
-				+ ", remarks=" + remarks + ", displayDetailStr=" + displayDetailStr + "]";
+		return "BillingDetail [id=" + id + ", paymentDescription=" + paymentDescription + ", amount=" + amount
+				+ ", remarks=" + remarks + ", billingSummary=" + billingSummary + "]";
 	}
+
 
 
 

@@ -11,10 +11,7 @@
 </head>
 <body>
 
-
-
 	<div layout:fragment="content">
-
 		 <h1 class="h2 pt-3 mb-3 pb-2 border-bottom">Customer Billing Form</h1>
           <div
             class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3"
@@ -69,18 +66,18 @@
                 	<button type="button"  class="btn btn-default border text-primary"  data-toggle="modal" data-target="#exampleModalCenter">
 					 	<span data-feather="plus-circle"></span>Add
 					</button>
-					  <a th:href="@{/billingsummaries/showFormForAddClear(customerId=${customer.id})}" class="btn btn-default border text-danger">
-                      <span data-feather="minus-circle"></span>Clear</a>
+
   				 </div>
- 
                 </div>
+                
                 <table class="col-md-12 table">
                   <tr>
                     <th>Description</th>
                     <th>Detail</th>
                     <th>Amount</th>
+                    <th></th>
                   </tr>
-                   <tr th:each="temp : ${paymentDetails}">
+                   <tr th:each="temp : ${billingDetails}">
                     <td>
                     	<span th:text="${temp.paymentDescription}"></span>
                     </td>
@@ -90,19 +87,22 @@
                     <td>
                      	<span th:text="${temp.amount}"></span>
                     </td>
+                    <td>
+                    	 <a th:href="@{/billingdetails/{billingSummaryId}/remove-billing-detail/{billingDetailId}(billingSummaryId=${billingSummary.id},billingDetailId=${temp.id})}"   class="btn btn-default border text-danger">
+                      <span data-feather="minus-circle"></span>Clear</a>
+                    </td>
                   </tr>
                   <tr>
                     <td></td>
                     <td></td>
-                    
                     <td>
                       <label for="totalAmount">Total</label>
                       <input type="number" id="totalAmount" th:field="*{totalAmount}" class="text-mute font-weight-bold form-control" readonly/>
-                    </td>
-                  
+                    </td>                 
                   </tr>
                 </table>
-				<p style="color:red" th:if="${#fields.hasErrors('paymentDetails')}" th:errors="*{paymentDetails}"></p>
+			
+			
                 <hr class="mb-4" />    	
                 	<button class="btn btn-primary btn-lg btn-block" type="submit">Save</button>                  	
               </form>
@@ -121,18 +121,17 @@
 					          <span aria-hidden="true">&times;</span>
 					        </button>
 					      </div>
-					      
-					      
-					       <form action="#" th:action="@{/billingsummaries/showFormForAddDetail}"  th:object="${billingSummary}"  method="GET" class="needs-validation" autocomplete="off">
+					     
+					       <form action="#" th:action="@{/billingdetails/{billingSummaryId}/create-billing-detail(billingSummaryId=${billingSummary.id})}"  th:object="${billingDetail}"  method="POST" class="needs-validation" autocomplete="off">
+              				   <input type="hidden" th:field="*{id}" />
+               				   <input type="hidden" th:field="*{billingSummary}" />
               				   <div class="modal-body">
-					           <input type="hidden" name="customerId" th:value="${customer.id}" />
-              					 <div class="row">
+			  					 <div class="row">
               						 <div class="col-md-4 mb-3">
 						                    <label for="paymentDescriptionId">Payment Description</label>
-											<select name="paymentDescriptionId" class="form-control" required>
-												<option selected value="">Choose...</option>
+						                    <select  th:field="*{paymentDescription}" name="paymentDescription" class="form-control" required>
 												<option th:each="paymentDesc : ${paymentDescriptions}"
-                           							 th:value="${paymentDesc.id}"
+                           							 th:value="${paymentDesc.name}"
                            								 th:utext="${paymentDesc.name}"/>
 											</select>
 										  </div>
@@ -142,7 +141,7 @@
 						                      type="text"
 						                      class="form-control"
 						                      id="remarks"
-						                      name="remarks"
+						                      th:field="*{remarks}"
 						                      placeholder=""
 						                    />
 						                    <div class="invalid-feedback">
@@ -156,9 +155,9 @@
 						                      type="number"
 						                      class="form-control"
 						                      id="amount"
-						                      name="amount"
+						                    
 						                      placeholder=""
-						                      value=""
+						                      th:field="*{amount}"
 						                      required
 						                    />
 

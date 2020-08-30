@@ -2,7 +2,9 @@ package com.nzp.wise2go.entities;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,13 +30,15 @@ import com.nzp.wise2go.utils.DateUtils;
 @Table(name="billing_summary")
 public class BillingSummary extends UserDateAudit {
 	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 218189187268585909L;
+	private static final long serialVersionUID = 1L;
 
 	@Id 
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id")
 	private Long id;
 
 	@NotNull(message="is required")
@@ -51,10 +55,14 @@ public class BillingSummary extends UserDateAudit {
 	@JoinColumn(name="customer_id")
 	private Customer customer;
 	
-	@NotEmpty(message="is required")
-	@OneToMany(mappedBy="billingSummary", cascade = {CascadeType.DETACH, CascadeType.MERGE,
-			CascadeType.PERSIST, CascadeType.REFRESH}, fetch=FetchType.LAZY)
-	private List<PaymentDetail> paymentDetails = new ArrayList<>();
+	/*
+	 * @NotEmpty(message="is required")
+	 * 
+	 * @OneToMany(mappedBy="billingSummary", cascade = {CascadeType.DETACH,
+	 * CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+	 * fetch=FetchType.LAZY) private List<BillingDetail> paymentDetails = new
+	 * ArrayList<>();
+	 */
 	
 	@NotNull(message="is required")
 	@DateTimeFormat (pattern="yyyy-MM-dd")
@@ -73,6 +81,9 @@ public class BillingSummary extends UserDateAudit {
 	@Transient
 	private String nextDueDateStr;
 	
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,  mappedBy="billingSummary")
+	private Set<BillingDetail> billingDetails = new HashSet<>(); 
 	
 	public BillingSummary() {
 		this.date = LocalDate.now();
@@ -119,13 +130,11 @@ public class BillingSummary extends UserDateAudit {
 		this.customer = customer;
 	}
 	
-	public List<PaymentDetail> getPaymentDetails() {
-		return paymentDetails;
-	}
-	public void setPaymentDetails(List<PaymentDetail> paymentDetails) {
-		this.paymentDetails = paymentDetails;
-	}
-	
+	/*
+	 * public List<BillingDetail> getPaymentDetails() { return paymentDetails; }
+	 * public void setPaymentDetails(List<BillingDetail> paymentDetails) {
+	 * this.paymentDetails = paymentDetails; }
+	 */
 	public LocalDate getDate() {
 		return date;
 	}
@@ -169,20 +178,27 @@ public class BillingSummary extends UserDateAudit {
 		this.isPaid = isPaid;
 	}
 	
+	public Set<BillingDetail> getBillingDetails() {
+		return billingDetails;
+	}
 
-	public void add(PaymentDetail paymentDetail) {
-		paymentDetails.add(paymentDetail);
-		paymentDetail.setBillingSummary(this);		
+	public void setBillingDetails(Set<BillingDetail> billingDetails) {
+		this.billingDetails = billingDetails;
 	}
 
 	@Override
 	public String toString() {
 		return "BillingSummary [id=" + id + ", date=" + date + ", totalAmount=" + totalAmount + ", customer=" + customer
-				+ ", paymentDetails=" + paymentDetails + ", nextDueDate=" + nextDueDate + ", isNextDueDate="
-				+ isNextDueDate + ", isPaid=" + isPaid + ", dateStr=" + dateStr + ", nextDueDateStr=" + nextDueDateStr
-				+ "]";
+				+ ", nextDueDate=" + nextDueDate + ", isNextDueDate=" + isNextDueDate + ", isPaid=" + isPaid
+				+ ", dateStr=" + dateStr + ", nextDueDateStr=" + nextDueDateStr + "]";
 	}
 	
+
+	/*
+	 * public void add(BillingDetail paymentDetail) {
+	 * paymentDetails.add(paymentDetail); paymentDetail.setBillingSummary(this); }
+	 */
+
 
 	
 	

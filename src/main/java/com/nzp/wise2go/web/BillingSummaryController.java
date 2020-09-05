@@ -18,12 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
 import com.nzp.wise2go.entities.Customer;
 import com.nzp.wise2go.entities.BillingSummary;
-import com.nzp.wise2go.entities.PaymentDescription;
 import com.nzp.wise2go.entities.BillingDetail;
 import com.nzp.wise2go.entities.Receipt;
 import com.nzp.wise2go.exception.ResourceNotFoundException;
@@ -57,6 +53,7 @@ public class BillingSummaryController
 	
 	@Autowired
 	private BillingDetailRepository billingDetailRepository;
+	
 	@Autowired
 	private ReportService reportService;
 	
@@ -155,22 +152,10 @@ public class BillingSummaryController
 	}
 
 	
-	@GetMapping("/{customerId}/success")
-	public String showSuccess(@PathVariable Long customerId, Model model) {
-		Optional<Customer> customer = customerRepository.findById(customerId);
-		Customer theCustomer =  customer.orElse(null);
-		model.addAttribute("customer", theCustomer);
-		
-		return "billingsummary/success";
-	}
+	
 	
 
 	 
-	@GetMapping("/report/{customerId}/{format}")
-	public String generateReport(@PathVariable String format, @PathVariable Long customerId) 
-	    		throws FileNotFoundException, JRException {
-	     return reportService.exportReport(format, customerId);
-	}
 	
 		
 	@GetMapping("/{customerId}/settle-payment")
@@ -188,13 +173,41 @@ public class BillingSummaryController
 		receipt.setTotalAmount(totalAmount);
 		receipt.setBillingSummaries(billingSummaries);		
 		
-		receiptRepository.save(receipt);
+		Receipt createdReceipt = receiptRepository.save(receipt);
 		
 		for(BillingSummary billingSummary : billingSummaries) {
 			billingSummary.setIsPaid(true);
 			billingSummaryRepository.save(billingSummary);
 		}
 
-		return "redirect:/billingsummaries/"+theCustomer.getId()+"/success";
+		return "redirect:/billingsummaries/"+theCustomer.getId()+"/receipt/"+createdReceipt.getId()+"/success";
+	}
+	
+	@GetMapping("/{customerId}/receipt/{receiptId}/success")
+	public String showSuccess(@PathVariable Long customerId, @PathVariable Long receiptId, Model model) {
+	
+		Customer theCustomer = customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Customer", "id", customerId));
+		
+		Receipt theReceipt = receiptRepository.findById(receiptId).orElseThrow(() -> new ResourceNotFoundException("Receipt", "id", receiptId));
+		
+		model.addAttribute("customer", theCustomer);
+		
+		model.addAttribute("receipt", theReceipt);
+		
+		return "billingsummary/success";
+	}
+	
+
+	@GetMapping("/report/{customerId}/{format}")
+	public String generateReport(@PathVariable String format, @PathVariable Long customerId) 
+	    		throws FileNotFoundException, JRException {
+	     return reportService.exportReport(format, customerId);
+	}
+	
+	@GetMapping("/{customerId}/receipt/{receiptId}/{format}")
+	public String generateReceipt(@PathVariable String format, @PathVariable Long customerId,
+			@PathVariable Long receiptId) 
+	    		throws FileNotFoundException, JRException {
+	     return reportService.exportReceipt(format, customerId, receiptId);
 	}
 }

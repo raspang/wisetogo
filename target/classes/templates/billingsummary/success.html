@@ -9,17 +9,18 @@
 </head>
 <body>
 	<div layout:fragment="content">
-		<div class=" mt-5">
+		<div class="mt-5">
 			<div class="jumbotron">
 			
 			
-					<p class="text-secondary">Receipt has been successfully
-						created.</p>
+					<p class="text-secondary">Receipt has been successfully created.</p>
 					<p>
 						<a class="btn btn-outline-secondary"
 							th:href="@{/billingsummaries/{customerId}/list(customerId=${customer.id})}"
-							role="button">Back to Customer Billings List</a> <a
-							class="btn btn-primary " href="#" role="button">View receipt</a>
+							role="button">Back to Customer Billings List</a>
+						<a class="btn btn-primary " 
+						th:href="@{/billingsummaries/{customerId}/receipt/{receiptId}/pdf(customerId=${customer.id},receiptId=${receipt.id})}"
+						 role="button">View receipt</a>
 					</p>
 			
 			</div>

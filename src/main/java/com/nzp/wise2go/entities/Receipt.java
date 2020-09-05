@@ -14,11 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.nzp.wise2go.entities.audit.UserDateAudit;
+import com.nzp.wise2go.utils.DateUtils;
 
 @Entity
 @Table(name="receipt")
@@ -44,6 +46,9 @@ public class Receipt extends UserDateAudit {
 	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="receipt_id", nullable = true)
 	private List<BillingSummary> billingSummaries;
+	
+	@Transient
+	private String datePaidStr;
 	
 	public Long getId() {
 		return id;
@@ -78,6 +83,15 @@ public class Receipt extends UserDateAudit {
 	}
 
 
+	
+
+	public String getDatePaidStr() {
+		return DateUtils.displayDate(datePaid);
+	}
+
+	public void setDatePaidStr(String datePaidStr) {
+		this.datePaidStr = datePaidStr;
+	}
 
 	@Override
 	public String toString() {

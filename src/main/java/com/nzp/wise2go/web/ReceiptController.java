@@ -19,19 +19,13 @@ import com.nzp.wise2go.repositories.BillingSummaryRepository;
 @RequestMapping("/receipts")
 public class ReceiptController
 {
-
-
 	@Autowired
 	private BillingSummaryRepository billingSummaryRepository;
-	
-
 	
 	@GetMapping("/{customerId}/showFormForAdd")
 	public String showFormForAdd(@PathVariable Long customerId,
 			@ModelAttribute("billingSummary") BillingSummary billingSummary,		
 			Model theModel) {
-
-
 		return "billingsummary/customer-billing-form";
 	}
 	
@@ -45,7 +39,6 @@ public class ReceiptController
 			
 			return "billingsummary/customer-billing-form";
 		}
-		
 
 		return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+"/list";
 	}

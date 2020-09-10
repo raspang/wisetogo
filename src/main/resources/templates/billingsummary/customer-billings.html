@@ -23,9 +23,9 @@
 			</div>
 			<div class="btn-toolbar mb-2 mb-md-0" th:if="${!p}">
 				<div class="btn-group mr-2">
-					<a class="btn btn-sm btn-outline-secondary"
+					<a class="btn btn-sm btn-outline-success"
 						th:href="@{/billingsummaries/report/{customerId}/pdf(customerId=${customer.id})}"
-						target="_blank"> PDF Billing</a>
+						target="_blank"> Generate PDF Billing</a>
 				</div>
 			</div>
 
@@ -59,6 +59,11 @@
 			</th:block>
 
 		</th:block>
+		
+		<a  class="btn btn-secondary m-2"
+				th:href="@{/receipts/{customerId}/list(customerId=${customer.id})}">View Receipts</a>
+				
+				
 			<div class="table-responsive">
 				<table class="table table-sm">
 					<thead>

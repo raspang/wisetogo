@@ -172,6 +172,7 @@ public class BillingSummaryController
 		receipt.setDatePaid(LocalDate.now());
 		receipt.setTotalAmount(totalAmount);
 		receipt.setBillingSummaries(billingSummaries);		
+		receipt.setCustomer(theCustomer);
 		
 		Receipt createdReceipt = receiptRepository.save(receipt);
 		
@@ -204,10 +205,5 @@ public class BillingSummaryController
 	     return reportService.exportReport(format, customerId);
 	}
 	
-	@GetMapping("/{customerId}/receipt/{receiptId}/{format}")
-	public String generateReceipt(@PathVariable String format, @PathVariable Long customerId,
-			@PathVariable Long receiptId) 
-	    		throws FileNotFoundException, JRException {
-	     return reportService.exportReceipt(format, customerId, receiptId);
-	}
+
 }

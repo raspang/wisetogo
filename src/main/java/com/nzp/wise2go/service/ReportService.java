@@ -79,7 +79,7 @@ public class ReportService {
         	
         }
         
-        invId = "INV"+currentCharges.getId();
+        invId = "BIL"+currentCharges.getId();
         
         //load file and compile it
         File file = ResourceUtils.getFile("classpath:billing.jrxml");
@@ -155,6 +155,7 @@ public class ReportService {
         parameters.put("totalCharges", String.valueOf(receipt.getTotalAmount()));
         parameters.put("receiptDate",  receipt.getDatePaidStr());
         parameters.put("receivedBy", issuedBy.getName());
+        parameters.put("statementDate", receipt.getDatePaidStr());
         
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
         if (reportFormat.equalsIgnoreCase("html")) {
@@ -164,6 +165,6 @@ public class ReportService {
             JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\RECEIPT-"+customer.getLastName()+recId+".pdf");
         }
 
-        return "redirect:/billingsummaries/"+customer.getId()+"/list";
+        return "redirect:/receipts/"+customer.getId()+"/list";
     }
 }

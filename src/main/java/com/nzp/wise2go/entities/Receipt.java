@@ -1,7 +1,6 @@
 package com.nzp.wise2go.entities;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,11 +11,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.nzp.wise2go.entities.audit.UserDateAudit;
@@ -46,6 +48,12 @@ public class Receipt extends UserDateAudit {
 	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="receipt_id", nullable = true)
 	private List<BillingSummary> billingSummaries;
+	
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "customer_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Customer customer;
+	
 	
 	@Transient
 	private String datePaidStr;
@@ -83,7 +91,13 @@ public class Receipt extends UserDateAudit {
 	}
 
 
-	
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
 	public String getDatePaidStr() {
 		return DateUtils.displayDate(datePaid);

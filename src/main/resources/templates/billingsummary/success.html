@@ -18,9 +18,9 @@
 						<a class="btn btn-outline-secondary"
 							th:href="@{/billingsummaries/{customerId}/list(customerId=${customer.id})}"
 							role="button">Back to Customer Billings List</a>
-						<a class="btn btn-primary " 
-						th:href="@{/billingsummaries/{customerId}/receipt/{receiptId}/pdf(customerId=${customer.id},receiptId=${receipt.id})}"
-						 role="button">View receipt</a>
+						<a class="btn btn-outline-success " 
+						th:href="@{/receipts/{customerId}/receipt/{receiptId}/pdf(customerId=${customer.id},receiptId=${receipt.id})}"
+						 role="button">Generate Receipt PDF</a>
 					</p>
 			
 			</div>

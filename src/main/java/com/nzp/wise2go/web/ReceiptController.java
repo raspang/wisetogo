@@ -1,18 +1,28 @@
 package com.nzp.wise2go.web;
 
-import javax.validation.Valid;
+import java.io.FileNotFoundException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.nzp.wise2go.entities.BillingSummary;
+import com.nzp.wise2go.entities.Customer;
+import com.nzp.wise2go.exception.ResourceNotFoundException;
+import com.nzp.wise2go.repositories.BillingDetailRepository;
 import com.nzp.wise2go.repositories.BillingSummaryRepository;
+import com.nzp.wise2go.repositories.CustomerRepository;
+import com.nzp.wise2go.repositories.ReceiptRepository;
+import com.nzp.wise2go.service.ReportService;
+
+import net.sf.jasperreports.engine.JRException;
 
 
 @Controller
@@ -20,29 +30,49 @@ import com.nzp.wise2go.repositories.BillingSummaryRepository;
 public class ReceiptController
 {
 	@Autowired
+	private CustomerRepository customerRepository;
+	
+	@Autowired
 	private BillingSummaryRepository billingSummaryRepository;
 	
-	@GetMapping("/{customerId}/showFormForAdd")
-	public String showFormForAdd(@PathVariable Long customerId,
-			@ModelAttribute("billingSummary") BillingSummary billingSummary,		
+	@Autowired
+	private ReportService reportService;
+
+	@Autowired
+	private ReceiptRepository receiptRepository;
+	
+	@GetMapping("/{customerId}/list")
+	public String showReceipts(@PathVariable Long customerId,
+			HttpServletRequest request, 
 			Model theModel) {
-		return "billingsummary/customer-billing-form";
-	}
-	
-	
-	
-	@PostMapping("/save")
-	public String savePayment(@Valid @ModelAttribute("billingSummary") BillingSummary theBillingSummary, BindingResult bindingResult, Model theModel) {
 		
-		if(bindingResult.hasErrors()) {	
+		Customer customer = customerRepository.findById(customerId).orElseThrow( () ->
+			new ResourceNotFoundException("Customer", "id", customerId)
+				);
+		
+        int page = 0; 
+        int size = 10; 
+        
+        if (request.getParameter("page") != null && !request.getParameter("page").isEmpty()) {
+            page = Integer.parseInt(request.getParameter("page")) - 1;
+        }
 
-			
-			return "billingsummary/customer-billing-form";
-		}
-
-		return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+"/list";
+        if (request.getParameter("size") != null && !request.getParameter("size").isEmpty()) {
+            size = Integer.parseInt(request.getParameter("size"));
+        }
+        
+		theModel.addAttribute("customer", customer);
+		theModel.addAttribute("receipts", receiptRepository.findByCustomerOrderByIdDesc(customer,  PageRequest.of(page, size)) );
+		
+		return "receipt/customer-receipt";
 	}
 	
+	@GetMapping("/{customerId}/receipt/{receiptId}/{format}")
+	public String generateReceipt(@PathVariable String format, @PathVariable Long customerId,
+			@PathVariable Long receiptId) 
+	    		throws FileNotFoundException, JRException {
+	     return reportService.exportReceipt(format, customerId, receiptId);
+	}
 
 
 }

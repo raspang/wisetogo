@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>Customer List</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+		<div
+			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<div>
+				<h3 class="display-4">
+					<small th:text="${customer.lastName}"></small>, <small
+						th:text="${customer.firstName}"></small>
+				</h3>
+				<h2 class="lead">
+					PPPOE Account: <span th:text="${customer.pppoeAccount}"></span>
+				</h2>
+			</div>
+
+
+		</div>
+
+			<div class="table-responsive">
+				<table class="table table-sm">
+					<thead>
+						<tr>
+							<th>Receipt ID</th>
+							<th>Date Paid</th>
+							 <th>Total Amount</th> 
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="temp : ${receipts} ">
+							<td><i><span th:text="${temp.id}"></span></i></td>
+							<td><i><span th:text="${temp.datePaidStr}"></span></i></td>
+							<td><i><span th:text="${temp.totalAmount}"></span></i></td>
+							<td>
+						
+						<a class="btn btn-sm btn-outline-success " 
+						th:href="@{/receipts/{customerId}/receipt/{receiptId}/pdf(customerId=${customer.id},receiptId=${temp.id})}"
+						 role="button">Generate Receipt PDF</a>
+					</td>
+
+						
+							
+
+						</tr>
+					</tbody>
+				</table>
+				<!-- customers pagination -->
+				<nav aria-label="Pagination"
+					th:if="${receipts.totalPages gt 0}">
+					<ul class="pagination justify-content-center font-weight-medium">
+						<li class="page-item"
+							th:classappend="${receipts.number eq 0} ? 'disabled'">
+							<a class="page-link svg-icon"
+							th:href="@{/receipts/{customerId}/list?page={id}(id=${receipts.number lt 2 ? 1 : receipts.number},p=${p},customerId=${customer.id})}"
+							aria-label="Previous" title="Previous Page" rel="tooltip"> <span
+								aria-hidden="true" data-feather="chevrons-left" width="20"
+								height="20"></span>
+						</a>
+						</li>
+						<li class="page-item"
+							th:classappend="${i eq receipts.number + 1} ? 'active'"
+							th:each="i : ${#numbers.sequence( receipts.number + 1, receipts.totalPages > 10 + receipts.number ? receipts.number + 10 : receipts.totalPages, 1)}">
+							<a class="page-link"
+							th:href="@{/receipts/{customerId}/list?page={id}(id=${i},p=${p},customerId=${customer.id})}"
+							th:text="${i}" th:title="${'Page '+ i}" rel="tooltip"></a>
+						</li>
+						<li class="page-item disabled"
+							th:if="${receipts.number + 10 < receipts.totalPages}">
+							<a class="page-link svg-icon" href="#"> <span
+								data-feather="more-horizontal" width="20" height="20"></span>
+						</a>
+						</li>
+						<li class="page-item"
+							th:classappend="${receipts.number + 1 eq receipts.totalPages} ? 'disabled'">
+							<a class="page-link svg-icon"
+							th:href="@{/receipts/{customerId}/list?page={id}(id=${receipts.number + 2},p=${p},customerId=${customer.id})}"
+							aria-label="Next" title="Next Page" rel="tooltip"> <span
+								aria-hidden="true" data-feather="chevrons-right" width="20"
+								height="20"></span>
+						</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		
+
+	</div>
+</body>
+
+</html>

@@ -1,8 +1,6 @@
 package com.nzp.wise2go.web;
 
 import java.io.FileNotFoundException;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.nzp.wise2go.entities.BillingSummary;
 import com.nzp.wise2go.entities.Customer;
 import com.nzp.wise2go.exception.ResourceNotFoundException;
-import com.nzp.wise2go.repositories.BillingDetailRepository;
 import com.nzp.wise2go.repositories.BillingSummaryRepository;
 import com.nzp.wise2go.repositories.CustomerRepository;
 import com.nzp.wise2go.repositories.ReceiptRepository;
@@ -32,9 +28,7 @@ public class ReceiptController
 	@Autowired
 	private CustomerRepository customerRepository;
 	
-	@Autowired
-	private BillingSummaryRepository billingSummaryRepository;
-	
+
 	@Autowired
 	private ReportService reportService;
 
@@ -49,7 +43,8 @@ public class ReceiptController
 		Customer customer = customerRepository.findById(customerId).orElseThrow( () ->
 			new ResourceNotFoundException("Customer", "id", customerId)
 				);
-		
+
+		Boolean isPaid = false;
         int page = 0; 
         int size = 10; 
         
@@ -61,6 +56,7 @@ public class ReceiptController
             size = Integer.parseInt(request.getParameter("size"));
         }
         
+        theModel.addAttribute("p", isPaid);
 		theModel.addAttribute("customer", customer);
 		theModel.addAttribute("receipts", receiptRepository.findByCustomerOrderByIdDesc(customer,  PageRequest.of(page, size)) );
 		

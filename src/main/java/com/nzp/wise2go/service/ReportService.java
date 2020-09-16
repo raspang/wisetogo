@@ -44,7 +44,7 @@ public class ReportService {
 	@Autowired
 	private UserRepository userRepository;
 
-    public String exportReport(String reportFormat, Long customerId) throws FileNotFoundException, JRException {
+    public String exportReportBilling(String reportFormat, Long customerId) throws FileNotFoundException, JRException {
     	
         String path = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\Report";
         
@@ -59,7 +59,7 @@ public class ReportService {
         BillingSummary currentCharges = billingSummaries.get(0);    
         Double amountBalance = 0d;
         Double rebate = 0d;
-        
+        String fileName = "\\BILLING-"+customer.getLastName().toUpperCase()+"-"+currentCharges.getId();
         
         for(BillingDetail paymentDetail : currentCharges.getBillingDetails() ) {
         	if(paymentDetail.getPaymentDescription().equalsIgnoreCase("Rebate"))
@@ -72,14 +72,14 @@ public class ReportService {
         // More than one billing
         String prevDueDate = "Thank You";
         Double prevAmountBalance = 0d;
-        String invId = String.valueOf(currentCharges.getId());
+        
         for(int index = 1; index < billingSummaries.size(); index++) {
         	prevDueDate = "DUE IMMEDIATELY";
         	prevAmountBalance += billingSummaries.get(index).getTotalAmount();
         	
         }
         
-        invId = "BIL"+currentCharges.getId();
+       
         
         //load file and compile it
         File file = ResourceUtils.getFile("classpath:billing.jrxml");
@@ -89,7 +89,7 @@ public class ReportService {
         
         parameters.put("billingTo", customer.getFullName());
         parameters.put("address", customer.getAddress());
-        parameters.put("id", invId); 
+        parameters.put("id", "Billing No. "+currentCharges.getId()); 
         parameters.put("amountBalance", String.valueOf(amountBalance));
         parameters.put("rebate", String.valueOf(rebate));
         parameters.put("prevAmountBalance", String.valueOf(prevAmountBalance));
@@ -100,10 +100,10 @@ public class ReportService {
         
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
         if (reportFormat.equalsIgnoreCase("html")) {
-            JasperExportManager.exportReportToHtmlFile(jasperPrint, path + "\\BILLING-"+customer.getLastName()+invId+".html");
+            JasperExportManager.exportReportToHtmlFile(jasperPrint, path + fileName+".html");
         }
         if (reportFormat.equalsIgnoreCase("pdf")) {
-            JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\BILLING-"+customer.getLastName()+invId+".pdf");
+            JasperExportManager.exportReportToPdfFile(jasperPrint, path + fileName+".pdf");
         }
 
         return "redirect:/billingsummaries/"+customer.getId()+"/list";
@@ -123,6 +123,8 @@ public class ReportService {
         if(billingSummaries.isEmpty())
         	return "redirect:/billingsummaries/"+customer.getId()+"/list";
         
+        String fileName = "\\RECEIPT-"+customer.getLastName().toUpperCase()+receipt.getId();
+        
         BillingSummary currentCharges = billingSummaries.get(0);    
         Double amountBalance = 0d;
         Double rebate = 0d;
@@ -136,7 +138,7 @@ public class ReportService {
         
         // More than one billing
         Double prevAmountBalance = 0d;
-        String recId = String.valueOf(currentCharges.getId());
+       
         for(int index = 1; index < billingSummaries.size(); index++) {
         	prevAmountBalance += billingSummaries.get(index).getTotalAmount();
         }
@@ -149,7 +151,7 @@ public class ReportService {
         
         parameters.put("billingTo", customer.getFullName());
         parameters.put("address", customer.getAddress());
-        parameters.put("id", recId); 
+        parameters.put("id", "Receipt No. "+receipt.getId()); 
         parameters.put("amountBalance", String.valueOf(amountBalance));
         parameters.put("rebate", String.valueOf(rebate));
         parameters.put("totalCharges", String.valueOf(receipt.getTotalAmount()));
@@ -159,10 +161,10 @@ public class ReportService {
         
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
         if (reportFormat.equalsIgnoreCase("html")) {
-            JasperExportManager.exportReportToHtmlFile(jasperPrint, path + "\\RECEIPT-"+customer.getLastName()+recId+".html");
+            JasperExportManager.exportReportToHtmlFile(jasperPrint, path + fileName+".html");
         }
         if (reportFormat.equalsIgnoreCase("pdf")) {
-            JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\RECEIPT-"+customer.getLastName()+recId+".pdf");
+            JasperExportManager.exportReportToPdfFile(jasperPrint, path +fileName+".pdf");
         }
 
         return "redirect:/receipts/"+customer.getId()+"/list";

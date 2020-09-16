@@ -24,21 +24,86 @@
 
 
 		</div>
-
+		<div class="row">
+			<div class="col-md-12 mb-3">
+				<label for="notpaid"> <input type="radio" name="p"
+					id="notpaid" value="false"
+					th:onclick="'window.location.href=\'/billingsummaries/'+${customer.id}+'/list?p=false\''"
+					/> Current Billing
+				</label>
+				<label for="paid"> <input type="radio" name="p" id="paid"
+					value="true"
+					th:onclick="'window.location.href=\'/billingsummaries/'+${customer.id}+'/list?p=true\''"
+					/> List of Settled Billings
+				</label>
+				<label for="receipt"> <input type="radio" name="receipt" id="receipt"
+					th:checked=true
+					th:onclick="'window.location.href=\'/receipts/'+${customer.id}+'/list\''"
+					/> List of Receipts
+				</label>
+			</div>
+		</div>
+		
 			<div class="table-responsive">
 				<table class="table table-sm">
 					<thead>
 						<tr>
 							<th>Receipt ID</th>
 							<th>Date Paid</th>
+							<th>Billing</th>
 							 <th>Total Amount</th> 
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="temp : ${receipts} ">
-							<td><i><span th:text="${temp.id}"></span></i></td>
+							<td><i>Receipt No. <span th:text="${temp.id}"></span></i></td>
 							<td><i><span th:text="${temp.datePaidStr}"></span></i></td>
+							<td>
+							
+
+								<table class="table table-sm">
+									<thead>
+										<tr>
+											<th>Billing ID</th>
+											<th>Date</th>
+											 <th>Details</th> 
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="temp2 : ${temp.billingSummaries} ">
+											<td><i>Billing no. <span th:text="${temp2.id}"></span></i></td>
+											<td><i><span th:text="${temp2.dateStr}"></span></i></td>
+											<td>
+												<table class="table table-sm">
+													<tbody>
+														<tr>
+															<td>Description</td>
+															<td>Remarks</td>
+															<td>Amount</td>
+														</tr>
+				 										<tr th:each="billingDetail : ${temp2.billingDetails}">
+															<td><i><span th:text="${billingDetail.paymentDescription}"></span></i></td>
+															<td><i><span th:text="${billingDetail.remarks}"></span></i></td>
+															<td><i><span th:text="${billingDetail.amount}"></span></i></td>
+														</tr> 
+														<tr>
+															<th colspan="2"></th>
+															<th>
+																<input type="number" class="total-amount form-control form-control-sm" th:value="${temp2.totalAmount}" readonly/>
+															</th>
+														</tr>
+													</tbody>
+												</table>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+
+
+
+							
+							</td>
 							<td><i><span th:text="${temp.totalAmount}"></span></i></td>
 							<td>
 						

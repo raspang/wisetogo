@@ -1,15 +1,22 @@
 package com.nzp.wise2go.web;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,6 +64,8 @@ public class BillingSummaryController
 	@Autowired
 	private ReportService reportService;
 	
+    @Autowired
+    private JavaMailSender javaMailSender;
 
 	@GetMapping("/{customerId}/list")
 	public String showBillingSummaries(@PathVariable Long customerId, HttpServletRequest request, Model model) {
@@ -151,12 +160,6 @@ public class BillingSummaryController
 		return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+"/list";
 	}
 
-	
-	
-	
-
-	 
-	
 		
 	@GetMapping("/{customerId}/settle-payment")
 	public String showBillingSummaries(@PathVariable Long customerId,  Model model) {
@@ -202,8 +205,48 @@ public class BillingSummaryController
 	@GetMapping("/report/{customerId}/{format}")
 	public String generateReport(@PathVariable String format, @PathVariable Long customerId) 
 	    		throws FileNotFoundException, JRException {
-	     return reportService.exportReport(format, customerId);
+	     return reportService.exportReportBilling(format, customerId);
 	}
 	
+	@GetMapping("/send/billing-statement/{id}")
+	public String sendEmailWithAttachement(@PathVariable Long id) {
+		
+		BillingSummary theBillingSummary = billingSummaryRepository.findById(id).orElseThrow(
+				()-> new ResourceNotFoundException("BillingSummary", "id", id));
+		
+		try {
+			sendEmailWithAttachment(theBillingSummary);
+		} catch (MessagingException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+"/list";
+	}
+	
+    private boolean sendEmailWithAttachment(BillingSummary theBillingSummary ) throws MessagingException, IOException {
+
+    	
+    	String path = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\Report\\BILLING-PangcogaBIL28.pdf";
+    	
+    	File file = new File(path);
+    	
+    	if(file.exists()) {
+	        MimeMessage msg = javaMailSender.createMimeMessage();
+	
+	        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+	        helper.setTo("raspangv1@gmail.com");
+	        helper.setSubject("Wisetogo: Payment for Invoice #");
+	        helper.setText("<h1>Check attachment for your statement of account.</h1>", true);
+	
+	        helper.addAttachment("Stament of Account", file);
+	        javaMailSender.send(msg);
+	        return true;
+        }else {
+        	return false;
+        }
+    	
+
+    }
 
 }

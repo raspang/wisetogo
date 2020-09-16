@@ -117,6 +117,28 @@
 				    $(this).alert('close');
 				});
 			</script>
+			<script>
+			
+				function settlement(){
+					let settles = document.getElementsByClassName("total-amount");
+					let isConfirmed = true;
+					for(let i = 0; i < settles.length; i++){
+						
+						if(settles[i].value <= 0){
+							isConfirmed = false;
+						}
+					}
+					if(!isConfirmed){
+						alert("Please confirm total amount.");
+						document.getElementById("settleId").addEventListener("click", function(event){
+							  event.preventDefault()
+							});
+						return false;
+					}
+					return true;
+
+				}
+			</script>
 			
 </body>
 </html>

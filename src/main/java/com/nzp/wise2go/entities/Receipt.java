@@ -45,7 +45,7 @@ public class Receipt extends UserDateAudit {
 	@Column(name="paid_date")
 	private LocalDate datePaid;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="receipt_id", nullable = true)
 	private List<BillingSummary> billingSummaries;
 	

@@ -49,11 +49,15 @@ public class PaymentDescController
 	
 	@PostMapping("/save")
 	public String savePaymentDescription(@Valid @ModelAttribute("paymentDescription") PaymentDescription thePaymentDescription, BindingResult bindingResult) {
+		String success = "created";
+		if(thePaymentDescription.getId() != null) {
+			success = "updated";
+		}
 		if(bindingResult.hasErrors())
 			return "paymentdescription/paymentdescription-form";
 		
 		paymentDescriptionRepository.save(thePaymentDescription);
-		return "redirect:/paymentdescriptions/list";
+		return "redirect:/paymentdescriptions/list?success="+success;
 	}
 	
 	@GetMapping("/delete")

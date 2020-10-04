@@ -49,6 +49,7 @@
 					<thead>
 						<tr>
 							<th>Receipt ID</th>
+							<th>Created By</th>
 							<th>Date Paid</th>
 							<th>Billing</th>
 							 <th>Total Amount</th> 
@@ -58,6 +59,7 @@
 					<tbody>
 						<tr th:each="temp : ${receipts} ">
 							<td><i>Receipt No. <span th:text="${temp.id}"></span></i></td>
+							<td><i><span th:text="${temp.createdBy.name}"></span></i></td>
 							<td><i><span th:text="${temp.datePaidStr}"></span></i></td>
 							<td>
 							

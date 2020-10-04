@@ -5,6 +5,10 @@
 
   feather.replace();
 
+
+	
+
+
   // Graphs
   var ctx = document.getElementById('myChart');
   // eslint-disable-next-line no-unused-vars
@@ -22,21 +26,13 @@
       ],
       datasets: [
         {
-          data: [1, 6, 15, 20, 40, 60, 80],
+          data: [1,2,3,4,5,6,7],
           lineTension: 0,
           backgroundColor: 'transparent',
           borderColor: '#007bff',
           borderWidth: 4,
           pointBackgroundColor: '#007bff',
-        },
-        {
-          data: [3, 6, 0, 3, 2, 5, 3],
-          lineTension: 0,
-          backgroundColor: 'transparent',
-          borderColor: '#c50000',
-          borderWidth: 4,
-          pointBackgroundColor: '#c50000',
-        },
+        }
       ],
     },
     options: {

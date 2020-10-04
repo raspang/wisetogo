@@ -50,10 +50,14 @@ public class ExpenseDescController
 	
 	@PostMapping("/save")
 	public String saveExpenseDescription(@Valid  @ModelAttribute("expenseDescription") ExpenseDescription theExpenseDescription, BindingResult bindingResult) {
+		String success = "created";
+		if(theExpenseDescription.getId() != null) {
+			success = "updated";
+		}
 		if(bindingResult.hasErrors())
 			return "expensedescription/expensedescription-form";
 		expenseDescriptionRepository.save(theExpenseDescription);
-		return "redirect:/expensedescriptions/list";
+		return "redirect:/expensedescriptions/list?success="+success;
 	}
 	
 	@GetMapping("/delete")

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.nzp.wise2go.entities.Customer;
 import com.nzp.wise2go.exception.ResourceNotFoundException;
-import com.nzp.wise2go.repositories.BillingSummaryRepository;
 import com.nzp.wise2go.repositories.CustomerRepository;
 import com.nzp.wise2go.repositories.ReceiptRepository;
 import com.nzp.wise2go.service.ReportService;

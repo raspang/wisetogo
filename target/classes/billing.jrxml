@@ -74,7 +74,7 @@
 	<title>
 		<band height="217" splitType="Stretch">
 			<staticText>
-				<reportElement x="10" y="130" width="84" height="25" uuid="57aed2b1-4f4e-40a3-a6ad-54dae8dd4c5a">
+				<reportElement x="31" y="128" width="84" height="25" uuid="57aed2b1-4f4e-40a3-a6ad-54dae8dd4c5a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -90,7 +90,7 @@
 				</reportElement>
 			</line>
 			<staticText>
-				<reportElement x="415" y="10" width="50" height="20" uuid="0f86baff-6386-4f3f-b3fe-2388707babe8"/>
+				<reportElement x="398" y="10" width="50" height="20" uuid="0f86baff-6386-4f3f-b3fe-2388707babe8"/>
 				<box rightPadding="4"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="DejaVu Serif"/>
@@ -98,7 +98,7 @@
 				<text><![CDATA[Date:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="415" y="30" width="50" height="20" uuid="0b3f9342-da78-4cfa-9fc5-2301c4749678"/>
+				<reportElement x="398" y="30" width="50" height="20" uuid="0b3f9342-da78-4cfa-9fc5-2301c4749678"/>
 				<box rightPadding="4"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="DejaVu Serif"/>
@@ -134,21 +134,21 @@
 				<imageExpression><![CDATA["wisetogo.png"]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
-				<reportElement x="40" y="155" width="240" height="20" uuid="b626a61c-c42a-49ce-8ab2-906c191c1248"/>
+				<reportElement x="61" y="153" width="240" height="20" uuid="b626a61c-c42a-49ce-8ab2-906c191c1248"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{billingTo}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="40" y="175" width="240" height="35" uuid="cedd34fc-4085-4574-a9f7-3ebaeed6c6d7"/>
+				<reportElement x="61" y="173" width="240" height="35" uuid="cedd34fc-4085-4574-a9f7-3ebaeed6c6d7"/>
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="465" y="30" width="91" height="20" uuid="02bf1884-4c36-4eda-a560-6415cded137f"/>
+				<reportElement x="448" y="30" width="108" height="20" uuid="02bf1884-4c36-4eda-a560-6415cded137f"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{id}]]></textFieldExpression>
 			</textField>
@@ -163,28 +163,14 @@
 				<text><![CDATA[STATEMENT OF ACCOUNT]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="465" y="10" width="89" height="20" uuid="423c1b04-6f15-4f25-9b2a-72c2c9b92170"/>
+				<reportElement x="448" y="10" width="106" height="20" uuid="423c1b04-6f15-4f25-9b2a-72c2c9b92170"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{statementDate}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="381">
-			<staticText>
-				<reportElement x="366" y="280" width="134" height="20" uuid="65b5e3ce-35cf-4e14-927b-9e056c20d247"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[AMOUNT DUE:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="210" y="280" width="156" height="20" uuid="82a45a0d-e0ab-47cb-84cf-49363a0da332"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DUE DATE:]]></text>
-			</staticText>
+		<band height="191">
 			<staticText>
 				<reportElement x="-1" y="11" width="556" height="30" forecolor="#000000" backcolor="#000000" uuid="54dbdf29-4722-4f38-91d2-d59a8fbff590"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -227,12 +213,6 @@
 				</textElement>
 				<text><![CDATA[Rebate]]></text>
 			</staticText>
-			<line>
-				<reportElement x="0" y="230" width="551" height="1" uuid="7952aeca-d0e0-4b2b-ab9a-6d90ae496652">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-			</line>
 			<textField isBlankWhenNull="true">
 				<reportElement x="364" y="79" width="136" height="20" uuid="85ce63a7-4e0d-481d-af89-32b5b11efc2a"/>
 				<box>
@@ -258,20 +238,6 @@
 				<textFieldExpression><![CDATA[$P{rebate}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="210" y="320" width="156" height="24" uuid="cfe4ce6c-63c0-44ca-ac3b-91595314c798"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{prevDueDate}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="210" y="300" width="156" height="20" uuid="c77446c8-0150-4d1a-8fa4-e777f23e3086"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{dueDate}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
 				<reportElement x="364" y="160" width="136" height="20" uuid="cd6ef546-e112-4716-b0f7-e6095542e0f7"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -282,55 +248,6 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{totalCharges}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="366" y="300" width="134" height="20" uuid="892b2d07-5524-44f8-8853-963002964fea"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{totalCharges}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="366" y="320" width="134" height="24" uuid="3b178aee-2d73-49bf-93ec-33f0a1a739f0"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{prevAmountBalance}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="50" y="300" width="160" height="20" uuid="9e324b74-ca06-4601-8608-429800f575de"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{billingTo}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="50" y="320" width="160" height="24" uuid="8f7e0896-8944-4671-9262-e01769a41185"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="50" y="250" width="90" height="18" uuid="bc3ad8f4-8331-4ad6-8ece-ef7725c71b2b"/>
-				<textElement verticalAlignment="Middle">
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{statementDate}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="20" y="250" width="30" height="18" uuid="c572f9c2-3a78-4be2-9da7-6253ce11dc08"/>
-				<textElement verticalAlignment="Middle">
-					<font size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Date:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="50" y="280" width="160" height="20" uuid="dd68745e-11aa-470b-b7e8-991c021cfe50"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="DejaVu Serif" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Subscriber:]]></text>
-			</staticText>
 		</band>
 	</pageHeader>
 </jasperReport>

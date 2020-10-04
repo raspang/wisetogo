@@ -18,8 +18,8 @@ INSERT INTO roles (id, name) VALUES
 
 
 INSERT INTO users (id, email, username, password, name) VALUES 
-(1, 'admin@gmail.com', 'admin', '$2a$10$baR1hKyJn/UGu/8AKeQq7uKpTqdSC47mudh8S6LLIEdxOTl496qRW', 'Admin'),
-(2, 'user@gmail.com', 'user', '$2a$10$baR1hKyJn/UGu/8AKeQq7uKpTqdSC47mudh8S6LLIEdxOTl496qRW', 'User');
+(1, 'admin@gmail.com', 'admin', '$2a$10$AfpILhMHcWwu2AWErA1J3.pH9o6P2e8jKEJX21zI1XiHlz/LDPfx.', 'Admin'),
+(2, 'user@gmail.com', 'user', '$2a$10$AfpILhMHcWwu2AWErA1J3.pH9o6P2e8jKEJX21zI1XiHlz/LDPfx.', 'User');
 
 
 insert into user_roles(user_id, role_id) values

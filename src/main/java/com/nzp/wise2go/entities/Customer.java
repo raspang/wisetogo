@@ -232,8 +232,11 @@ public class Customer extends UserDateAudit{
 	
 	public LocalDate getDueDate() {
 		
-		if (billingSummaries != null && billingSummaries.size() > 0)
-			return billingSummaries.get(billingSummaries.size()-1).getNextDueDate();
+		if (billingSummaries != null && billingSummaries.size() > 0) {
+			BillingSummary billSummary = billingSummaries.get(billingSummaries.size()-1);
+			return billSummary != null && !billSummary.getIsPaid() ? billSummary.getNextDueDate() : null;
+		}
+			
 		return dueDate;
 	}
 

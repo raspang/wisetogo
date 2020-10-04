@@ -51,15 +51,8 @@ public class BillingSummary extends UserDateAudit {
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name="customer_id")
 	private Customer customer;
-	
-	/*
-	 * @NotEmpty(message="is required")
-	 * 
-	 * @OneToMany(mappedBy="billingSummary", cascade = {CascadeType.DETACH,
-	 * CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
-	 * fetch=FetchType.LAZY) private List<BillingDetail> paymentDetails = new
-	 * ArrayList<>();
-	 */
+
+	private String mbps;
 	
 	@NotNull(message="is required")
 	@DateTimeFormat (pattern="yyyy-MM-dd")
@@ -72,16 +65,14 @@ public class BillingSummary extends UserDateAudit {
 	@Column(name="is_paid")
 	private Boolean isPaid;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,  mappedBy="billingSummary")
+	private Set<BillingDetail> billingDetails = new HashSet<>(); 
+	
 	@Transient
 	private String dateStr;
 	
 	@Transient
 	private String nextDueDateStr;
-	
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,  mappedBy="billingSummary")
-	private Set<BillingDetail> billingDetails = new HashSet<>(); 
-	
 	public BillingSummary() {
 		this.date = LocalDate.now();
 		this.nextDueDate = LocalDate.now().plusMonths(1);
@@ -127,11 +118,7 @@ public class BillingSummary extends UserDateAudit {
 		this.customer = customer;
 	}
 	
-	/*
-	 * public List<BillingDetail> getPaymentDetails() { return paymentDetails; }
-	 * public void setPaymentDetails(List<BillingDetail> paymentDetails) {
-	 * this.paymentDetails = paymentDetails; }
-	 */
+
 	public LocalDate getDate() {
 		return date;
 	}
@@ -175,6 +162,14 @@ public class BillingSummary extends UserDateAudit {
 		this.isPaid = isPaid;
 	}
 	
+	public String getMbps() {
+		return mbps;
+	}
+
+	public void setMbps(String mbps) {
+		this.mbps = mbps;
+	}
+
 	public Set<BillingDetail> getBillingDetails() {
 		return billingDetails;
 	}
@@ -182,6 +177,8 @@ public class BillingSummary extends UserDateAudit {
 	public void setBillingDetails(Set<BillingDetail> billingDetails) {
 		this.billingDetails = billingDetails;
 	}
+	
+	
 
 	@Override
 	public String toString() {

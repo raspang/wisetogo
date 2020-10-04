@@ -53,6 +53,10 @@ public class Expense extends UserDateAudit{
 	@Transient
 	private String dateStr;
 	
+	@Transient
+	private  String totalAmountStr;
+	
+	
 	
 	public Expense() {
 		this.date = LocalDate.now();
@@ -121,19 +125,26 @@ public class Expense extends UserDateAudit{
 	}
 
 
+	
+	public String getTotalAmountStr() {
+		return String.format("%.2f",totalAmount);
+	}
+
+
+
+	public void setTotalAmountStr(String totalAmountStr) {
+		this.totalAmountStr = totalAmountStr;
+	}
+
+
+
 	@Override
 	public String toString() {
 		return "Expense [id=" + id + ", date=" + date + ", totalAmount=" + totalAmount + ", expenseDetails="
 				+ expenseDetails + "]";
 	}
 	
-	/*
-	 * @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
-	 * CascadeType.PERSIST, CascadeType.REFRESH})
-	 * 
-	 * @JoinColumn(name="issuedBy_id") private User issuedBy;
-	 */
-	
+
 	
 	
 }

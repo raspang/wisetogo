@@ -2,21 +2,27 @@ package com.nzp.wise2go.web;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,9 +33,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.nzp.wise2go.entities.Customer;
 import com.nzp.wise2go.entities.BillingSummary;
+
 import com.nzp.wise2go.entities.BillingDetail;
 import com.nzp.wise2go.entities.Receipt;
+import com.nzp.wise2go.entities.ScheduleEmail;
 import com.nzp.wise2go.exception.ResourceNotFoundException;
+import com.nzp.wise2go.job.EmailJob;
 import com.nzp.wise2go.repositories.CustomerRepository;
 import com.nzp.wise2go.repositories.PaymentDescriptionRepository;
 import com.nzp.wise2go.repositories.ReceiptRepository;
@@ -63,9 +72,10 @@ public class BillingSummaryController
 	
 	@Autowired
 	private ReportService reportService;
-	
+
+    
     @Autowired
-    private JavaMailSender javaMailSender;
+    private Scheduler scheduler;
 
 	@GetMapping("/{customerId}/list")
 	public String showBillingSummaries(@PathVariable Long customerId, HttpServletRequest request, Model model) {
@@ -106,6 +116,7 @@ public class BillingSummaryController
 				() -> new ResourceNotFoundException("customer", "id", customerId));
 		BillingSummary billingSummary = new BillingSummary();
 		billingSummary.setCustomer(theCustomer);
+		billingSummary.setMbps(theCustomer.getPlanAvail().getMaxMbps());
 		billingSummary = billingSummaryRepository.save(billingSummary);
 		return "redirect:/billingsummaries/"+theCustomer.getId()+"/showFormForAdd/"+billingSummary.getId();
 		
@@ -116,6 +127,10 @@ public class BillingSummaryController
 			Model theModel) {
 		BillingSummary theBillingSummary = billingSummaryRepository.findById(billingSummaryId).orElseThrow(
 				()-> new ResourceNotFoundException("BillingSummary", "id", billingSummaryId));
+		theBillingSummary.setMbps(theBillingSummary.getCustomer().getPlanAvail().getMaxMbps());
+		if(theBillingSummary.getIsPaid()) {
+			return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+"/list?p=true";
+		}
 		
 		BillingDetail billingDetail = new BillingDetail();
 		billingDetail.setBillingSummary(theBillingSummary);
@@ -139,7 +154,13 @@ public class BillingSummaryController
 
 	
 	@PostMapping("/save")
-	public String savePayment(@Valid @ModelAttribute("billingSummary") BillingSummary theBillingSummary, BindingResult bindingResult, Model theModel) {
+	public String savePayment(@Valid @ModelAttribute("billingSummary") BillingSummary theBillingSummary, BindingResult bindingResult, Model theModel) throws Exception {
+		
+		String success = "created";
+
+		if(theBillingSummary.getIsPaid()) {
+			return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+"/list?p=true";
+		}
 		
 		if(bindingResult.hasErrors()) {	
 			
@@ -147,19 +168,98 @@ public class BillingSummaryController
 			
 			theModel.addAttribute("paymentDescriptions", paymentDescriptionRepository.findByEnable(true));
 			
-			//theModel.addAttribute("paymentDetails", theBillingSummary.getPaymentDetails());		
-			
+	
 			return "billingsummary/customer-billing-form";
 		}
 		BillingSummary billingSummary = billingSummaryRepository.findFirstByIsNextDueDate(true);
 		if(billingSummary != null) {
 			billingSummary.setIsNextDueDate(false);
+			
 			billingSummaryRepository.save(billingSummary);
+			if(billingSummary.getCustomer().getActive() 
+					&& !billingSummary.getCustomer().getEmail().isEmpty() ) {	
+				scheduleEmail(billingSummary) ;
+			}
+				
 		}
+		theBillingSummary.setMbps(theBillingSummary.getCustomer().getPlanAvail().getMaxMbps());
 		billingSummaryRepository.save(theBillingSummary);
-		return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+"/list";
+		return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+"/list?success="+success;
 	}
 
+	  private void scheduleEmail(BillingSummary billingSummary) throws Exception {
+	    	String fileName = "\\BILLING-"+billingSummary.getCustomer().getLastName().toUpperCase()+"-"+billingSummary.getId();
+	    	
+	    	String path = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\Report\\"
+	    			+ fileName+".pdf";
+	    	
+	    	File file = new File(path);
+	    	
+	    	if(!file.exists()) {
+	    		 reportService.exportReportBilling("pdf", billingSummary.getCustomer().getId());
+	    		 file = new File(path);
+	    	}
+		  	Customer customer = billingSummary.getCustomer();
+			List<BillingSummary> billingSummaries = billingSummaryRepository.findByCustomerAndIsPaidOrderByIdDesc(customer,
+					false);
+			
+			ScheduleEmail scheduleEmail = new ScheduleEmail();
+			scheduleEmail.setEmail(customer.getEmail());
+			scheduleEmail.setSubject("Wisetogo Bill No. "+billingSummary.getId());
+			if(billingSummaries.size() == 1) {
+				scheduleEmail.setBody("Dear valued customer,<br><br>Attached is your Wisetoge Billing. <br><br>If you already paid, please ignore this reminder.<br><br>Have a wonderful day!");
+			}else {
+				scheduleEmail.setBody("Dear valued customer,<br><br>Attached is your Wisetoge Billing. <br>Please pay immediately. <br><br>If you already paid, please ignore this reminder.<br><br>Have a wonderful day!");
+			}
+			LocalDate before5DaysDate = billingSummary.getNextDueDate().minusDays(5);
+			scheduleEmail.setDateTime(before5DaysDate.atStartOfDay());
+			scheduleEmail.setTimeZone(ZoneId.systemDefault());
+			scheduleEmail.setFile(file);
+	        try {
+
+	            ZonedDateTime dateTime = ZonedDateTime.of(scheduleEmail.getDateTime(), scheduleEmail.getTimeZone());
+
+	            JobDetail jobDetail = buildJobDetail(scheduleEmail);
+	            Trigger trigger = buildJobTrigger(jobDetail, dateTime);
+	            scheduler.scheduleJob(jobDetail, trigger);
+
+
+	           
+	        } catch (SchedulerException ex) {
+	          //"Error scheduling email. Please try later!"); 
+	        }
+	        
+	        
+	    }
+	  
+	
+
+	    private JobDetail buildJobDetail(ScheduleEmail scheduleEmail) {
+	        JobDataMap jobDataMap = new JobDataMap();
+
+	        jobDataMap.put("email", scheduleEmail.getEmail());
+	        jobDataMap.put("subject", scheduleEmail.getSubject());
+	        jobDataMap.put("body", scheduleEmail.getBody());
+	        jobDataMap.put("file", scheduleEmail.getFile());
+
+	        return JobBuilder.newJob(EmailJob.class)
+	                .withIdentity(UUID.randomUUID().toString(), "email-jobs")
+	                .withDescription("Send Email Job")
+	                .usingJobData(jobDataMap)
+	                .storeDurably()	
+	                .build();
+	    }
+
+	    private Trigger buildJobTrigger(JobDetail jobDetail, ZonedDateTime startAt) {
+	        return TriggerBuilder.newTrigger()
+	                .forJob(jobDetail)
+	                .withIdentity(jobDetail.getKey().getName(), "email-triggers")
+	                .withDescription("Send Email Trigger")
+	                .startAt(Date.from(startAt.toInstant()))
+	                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
+	                .build();
+	    }
+	    
 		
 	@GetMapping("/{customerId}/settle-payment")
 	public String showBillingSummaries(@PathVariable Long customerId,  Model model) {
@@ -197,56 +297,22 @@ public class BillingSummaryController
 		model.addAttribute("customer", theCustomer);
 		
 		model.addAttribute("receipt", theReceipt);
-		
-		return "billingsummary/success";
+		return "redirect:/billingsummaries/"+theCustomer.getId()+"/list?success=settled account";
 	}
 	
 
 	@GetMapping("/report/{customerId}/{format}")
 	public String generateReport(@PathVariable String format, @PathVariable Long customerId) 
 	    		throws FileNotFoundException, JRException {
-	     return reportService.exportReportBilling(format, customerId);
+	     reportService.exportReportBilling(format, customerId);
+	     return "redirect:/billingsummaries/"+customerId+"/list";
 	}
 	
-	@GetMapping("/send/billing-statement/{id}")
-	public String sendEmailWithAttachement(@PathVariable Long id) {
-		
-		BillingSummary theBillingSummary = billingSummaryRepository.findById(id).orElseThrow(
-				()-> new ResourceNotFoundException("BillingSummary", "id", id));
-		
-		try {
-			sendEmailWithAttachment(theBillingSummary);
-		} catch (MessagingException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return "redirect:/billingsummaries/"+theBillingSummary.getCustomer().getId()+"/list";
-	}
-	
-    private boolean sendEmailWithAttachment(BillingSummary theBillingSummary ) throws MessagingException, IOException {
 
-    	
-    	String path = "C:\\Users\\"+System.getProperty("user.name")+"\\Desktop\\Report\\BILLING-PangcogaBIL28.pdf";
-    	
-    	File file = new File(path);
-    	
-    	if(file.exists()) {
-	        MimeMessage msg = javaMailSender.createMimeMessage();
 	
-	        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-	        helper.setTo("raspangv1@gmail.com");
-	        helper.setSubject("Wisetogo: Payment for Invoice #");
-	        helper.setText("<h1>Check attachment for your statement of account.</h1>", true);
+		
 	
-	        helper.addAttachment("Stament of Account", file);
-	        javaMailSender.send(msg);
-	        return true;
-        }else {
-        	return false;
-        }
-    	
+	
 
-    }
 
 }

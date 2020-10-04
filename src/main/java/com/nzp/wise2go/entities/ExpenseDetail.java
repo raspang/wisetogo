@@ -86,11 +86,12 @@ public class ExpenseDetail {
 		this.expense = expense;
 	}
 
-	
-	
 
-	
-	
+	@Override
+	public String toString() {
+		return "Description=" + expenseDescription + ", Remarks=" + remarks + ", Amount=" + amount;
+	}
+
 	
 	
 	

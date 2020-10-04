@@ -49,12 +49,15 @@ public class PlanAvailsController
 	
 	@PostMapping("/save")
 	public String saveThe(@Valid @ModelAttribute("planAvail") PlanAvail thePlanAvail, BindingResult bindingResult) {
-		
+		String success = "created";
+		if(thePlanAvail.getId() != null) {
+			success = "updated";
+		}		
 		if(bindingResult.hasErrors())
 			return "planavail/planavail-form";	
 		
 		planAvailRepository.save(thePlanAvail);
-		return "redirect:/planavails/list";
+		return "redirect:/planavails/list?success="+success;
 	}
 	
 	@GetMapping("/delete")

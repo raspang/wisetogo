@@ -56,7 +56,7 @@ public class CustomerController {
 		model.addAttribute("customers", 
 				customerRepository.findByLastNameOrFirstNameOrPppoeAccount(
 						keyword, PageRequest.of(page, size)));
-		
+		model.addAttribute("noOfActiveCustomers", customerRepository.findByEnable(true).size());
 		model.addAttribute("keyword", keyword);
 
 		return "customer/customers";
@@ -81,6 +81,10 @@ public class CustomerController {
 	@PostMapping("/save")
 	public String saveCustomer(@Valid  @ModelAttribute("customer") Customer theCustomer, 
 			BindingResult bindingResult, Model theModel) {
+		String success = "created";
+		if(theCustomer.getId() != null) {
+			success = "updated";
+		}
 		
 		if(bindingResult.hasErrors()) {
 			theModel.addAttribute("planAvails", planAvailRepository.findByEnable(true));
@@ -96,7 +100,7 @@ public class CustomerController {
 		}
 
 		customerRepository.save(theCustomer);
-		return "redirect:/customers/list";
+		return "redirect:/customers/list?success="+success;
 	}
 
 	@GetMapping("/delete")

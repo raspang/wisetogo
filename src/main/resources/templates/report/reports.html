@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	layout:decorator="layout">
+<head>
+<title>Reports</title>
+</head>
+<body>
+	<div layout:fragment="content">
+
+
+		<div
+			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+			<h1 class="h2">Reports</h1>
+		</div>
+
+		<form th:action="@{/reports/income-report}" method="GET">
+			<div class="row">
+		 		<div class="col-md-2 mb-3">
+					<select class="form-control form-control-lg" name="month">
+						<option th:each="m: ${months}" th:value="${m}" th:utext="${m}"/>
+					</select>
+				</div>
+				<div class="col-md-3 mb-3">
+					<button type="submit" class="btn btn-lg btn-info mb-2 w-100">Generate Cash Receipts</button>
+				</div>
+			</div>
+		</form>
+		
+		<form th:action="@{/reports/expense-report}" method="GET">
+			<div class="row">
+		 		<div class="col-md-2 mb-3">
+					<select class="form-control form-control-lg" name="month">
+						<option th:each="m: ${months}" th:value="${m}" th:utext="${m}"/>
+					</select>
+				</div>
+				<div class="col-md-3 mb-3">
+					<button type="submit" class="btn btn-lg btn-info mb-2 w-100">Generate Expense Reports</button>
+				</div>
+			</div>
+		</form>
+
+	</div>
+</body>
+
+</html>

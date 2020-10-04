@@ -42,15 +42,7 @@ public class User
 	@Size(min=4, message="minimum size is 4")
 	private String password;
 	
-	/*
-	 * @NotNull(message="is required")
-	 * 
-	 * @ManyToMany(cascade=CascadeType.MERGE)
-	 * 
-	 * @JoinTable( name="user_role", joinColumns={@JoinColumn(name="USER_ID",
-	 * referencedColumnName="ID")}, inverseJoinColumns={@JoinColumn(name="ROLE_ID",
-	 * referencedColumnName="ID")}) private List<Role> roles;
-	 */
+
 	@NotNull(message="is required")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

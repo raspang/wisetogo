@@ -54,16 +54,16 @@
 							<li class="nav-item"><a class="nav-link" th:href="@{/expenses/list}"> <span
 									data-feather="file"></span> Expense
 							</a></li>
-							<li class="nav-item"><a class="nav-link" href="#"> <span
+							<li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item"><a class="nav-link" th:href="@{/reports/list}"> <span
 									data-feather="bar-chart-2"></span> Reports
 							</a></li>
 						</ul>
 
-						<h6
+						<h6 sec:authorize="hasRole('ROLE_ADMIN')" 
 							class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
 							<span>Manage Detail Description</span>
 						</h6>
-						<ul class="nav flex-column mb-2">
+						<ul sec:authorize="hasRole('ROLE_ADMIN')" class="nav flex-column mb-2">
 							<li class="nav-item"><a class="nav-link" th:href="@{/paymentdescriptions/list}"> <span
 									data-feather="file-text"></span> Payment Details
 							</a></li>
@@ -75,14 +75,12 @@
 							</a></li>
 						</ul>
 
-						<h6
+						<h6 sec:authorize="hasRole('ROLE_ADMIN')" 
 							class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
 							<span>Audit</span>
 						</h6>
-						<ul class="nav flex-column mb-2">
-							<li class="nav-item"><a class="nav-link" href="#"> <span
-									data-feather="file-text"></span> History Audit
-							</a></li>
+						<ul sec:authorize="hasRole('ROLE_ADMIN')"  class="nav flex-column mb-2">
+			
 							<li class="nav-item"><a class="nav-link"th:href="@{/users/list}"> <span
 									data-feather="users"></span> Users
 							</a></li>
@@ -105,18 +103,12 @@
        				document.write(
           				'<script src="@{/assets/js/jquery-3.5.1.slim.min.js}"><\/script>');
       		</script>
-    
-			<script th:src="@{'/assets/bootstrap/js/bootstrap.bundle.js'}"></script>
-			
+			<script th:src="@{'/assets/bootstrap/js/bootstrap.bundle.js'}"></script>	
 			<script th:src="@{'/assets/js/feather.min.js'}"></script>
 			<script th:src="@{'/assets/js/Chart.min.js'}"></script>
 			<script th:src="@{'/assets/js/dashboard.js'}"></script>
 
-			<script>
-				$(".alert").delay(4000).slideUp(200, function() {
-				    $(this).alert('close');
-				});
-			</script>
+
 			<script>
 			
 				function settlement(){
@@ -135,10 +127,21 @@
 							});
 						return false;
 					}
+					if(isConfirmed){
+						if (!(confirm('are you sure?'))) return false
+					}
 					return true;
 
 				}
 			</script>
+			<script>
+				$(document).ready(function() {
+				    // show the alert
+				    setTimeout(function() {
+				        $(".alert").alert('close');
+				    }, 2000);
+				});
+				</script>
 			
 </body>
 </html>

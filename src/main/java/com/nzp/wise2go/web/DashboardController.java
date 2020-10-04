@@ -14,12 +14,8 @@ public class DashboardController {
 
 	@GetMapping("")
 	public String showCustomers(Model model) {
-
-
 		return "dashboard";
 	}
-
-
 
 	public String getPrincipal() {
 		String username;

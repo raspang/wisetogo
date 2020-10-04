@@ -63,13 +63,17 @@ public class UserController{
 	
 	@PostMapping("/save")
 	public String saveThe(@Valid @ModelAttribute("user") User theUser, BindingResult bindingResult) {
+		String success = "created";
+		if(theUser.getId() != null) {
+			success = "updated";
+		}
 		if(bindingResult.hasErrors()) {
 			return "user/user-form";	
 		}
 		
 		theUser.setPassword(passwordEncoder.encode(theUser.getPassword()));
 		userRepository.save(theUser);
-		return "redirect:/users/list";
+		return "redirect:/users/list?success="+success;
 	}
 	
 	@GetMapping("/delete")

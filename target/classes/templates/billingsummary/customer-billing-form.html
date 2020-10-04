@@ -20,6 +20,7 @@
               <form action="#" th:action="@{/billingsummaries/save}" th:object="${billingSummary}"  method="POST" class="needs-validation" autocomplete="off">
                 <input type="hidden" th:field="*{id}" />
                 <input type="hidden" th:field="*{customer}" />
+                <input type="hidden" th:field="*{mbps}" />
                 <div class="row">
                   <div class="col-md-4 mb-2">
                     <label for="fullName">Name</label>

@@ -51,7 +51,7 @@ public class ExpenseController
         }
        
         
-		model.addAttribute("expenses", expenseRepository.findByEnableOrderByIdDesc(true, PageRequest.of(page, size)));	
+		model.addAttribute("expenses", expenseRepository.findByEnableOrderByDateDesc(true, PageRequest.of(page, size)));	
 		return "expense/expenses";
 	}
 	
@@ -101,7 +101,10 @@ public class ExpenseController
 	
 	@PostMapping("/save")
 	public String saveExpense(@Valid @ModelAttribute("expense") Expense theExpense, BindingResult bindingResult, Model theModel) {
-		
+		String success = "created";
+		if(theExpense.getId() != null) {
+			success = "updated";
+		}	
 		if(bindingResult.hasErrors()) {
 			Double total = 0.0;
 			for(ExpenseDetail expenseDetail : theExpense.getExpenseDetails())
@@ -114,8 +117,9 @@ public class ExpenseController
 		}
 		
 		expenseRepository.save(theExpense);
+		theModel.addAttribute("expense", new Expense());
 
-		return "redirect:/expenses/list";
+		return "redirect:/expenses/list?success="+success;
 	}
 	
 	@GetMapping("/delete")

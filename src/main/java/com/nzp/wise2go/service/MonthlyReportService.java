@@ -37,7 +37,10 @@ public class MonthlyReportService {
 			String description = "";
 			for(BillingSummary billingSummary: receipt.getBillingSummaries()) {
 				for(BillingDetail billingDetail : billingSummary.getBillingDetails()) {
-					description+=billingDetail.getPaymentDescription()+", ";
+					description+=billingDetail.getPaymentDescription();
+					if(!billingDetail.getRemarks().isEmpty())
+						description+=" ("+billingDetail.getRemarks()+") ";
+					description+=", ";
 				}
 			}
 			monthReport.setDescription(description);

@@ -1,10 +1,12 @@
 package com.nzp.wise2go.web;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,7 +42,7 @@ public class ReportController{
 	}
 	
 	@GetMapping("/income-report")
-	public String generateMonthlyIncomeReport(@RequestParam("month") String month) throws FileNotFoundException, JRException {
+	public String generateMonthlyIncomeReport(HttpServletResponse resp, @RequestParam("month") String month) throws JRException, IOException {
 		int i;
 		for(i = 1; i <= 12; i++) {
 			if(months.get(i-1).equals(month)) {
@@ -48,18 +50,18 @@ public class ReportController{
 			}
 		}
 	
-		return reportService.exportMonthlyReport("pdf", i);
+		return reportService.exportMonthlyReport(resp, "pdf", i);
 	}
 	
 	@GetMapping("/expense-report")
-	public String generateMonthlyExpenseReport(@RequestParam("month") String month) throws FileNotFoundException, JRException {
+	public String generateMonthlyExpenseReport(HttpServletResponse resp, @RequestParam("month") String month) throws JRException, IOException {
 		int i;
 		for(i = 1; i <= 12; i++) {
 			if(months.get(i-1).equals(month)) {
 				break;
 			}
 		}
-		return reportService.exportMonthlyExpense("pdf", i);
+		return reportService.exportMonthlyExpense(resp, "pdf", i);
 	
 	}
 	

@@ -2,10 +2,14 @@ package com.nzp.wise2go.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
@@ -221,16 +226,16 @@ public class ReportService {
 		return "redirect:/receipts/" + customer.getId() + "/list";
 	}
 	
-	public String exportMonthlyReport(String reportFormat, Integer month)
-			throws FileNotFoundException, JRException {
+	public String exportMonthlyReport(HttpServletResponse resp, String reportFormat, Integer month)
+			throws JRException, IOException {
 
-		 List<String> months = Arrays.asList("January", "February", "March",
-				"April", "May", "June", "July", "August", "September", "October", "November", "December");
+		// List<String> months = Arrays.asList("January", "February", "March",
+		//		"April", "May", "June", "July", "August", "September", "October", "November", "December");
 		
 		
-		String path = "C:\\Users\\" + System.getProperty("user.name") + "\\Desktop\\Report";
+		//String path = "C:\\Users\\" + System.getProperty("user.name") + "\\Desktop\\Report";
 
-		String fileName = "\\MONTHLY-REPORT-" + months.get(month-1);
+		//String fileName = "\\MONTHLY-REPORT-" + months.get(month-1);
 
 
 		List<MonthReport> monthlyReports = monthlyReportService.getIncomeReport(month);
@@ -247,7 +252,7 @@ public class ReportService {
 		}
 		parameters.put("overAllTotal", String.format("%.2f",total));	
 	
-
+		/*
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 		if (reportFormat.equalsIgnoreCase("html")) {
 			JasperExportManager.exportReportToHtmlFile(jasperPrint, path + fileName + ".html");
@@ -255,20 +260,32 @@ public class ReportService {
 		if (reportFormat.equalsIgnoreCase("pdf")) {
 			JasperExportManager.exportReportToPdfFile(jasperPrint, path + fileName + ".pdf");
 		}
+		*/
+    	byte[] bytes = null;
+    	bytes = JasperRunManager.runReportToPdf(jasperReport, parameters, dataSource);
+    	
+		resp.reset();
+		resp.resetBuffer();
+		resp.setContentType("application/pdf");
+		resp.setContentLength(bytes.length);
+		ServletOutputStream ouputStream = resp.getOutputStream();
+		ouputStream.write(bytes, 0, bytes.length);
+		ouputStream.flush();
+		ouputStream.close();
 
 		return "redirect:/reports/list";
 	}
 	 
-	public String exportMonthlyExpense(String reportFormat, Integer month)
-			throws FileNotFoundException, JRException {
+	public String exportMonthlyExpense(HttpServletResponse resp,String reportFormat, Integer month)
+			throws JRException, IOException {
 
-		 List<String> months = Arrays.asList("January", "February", "March",
-				"April", "May", "June", "July", "August", "September", "October", "November", "December");
+		// List<String> months = Arrays.asList("January", "February", "March",
+		//		"April", "May", "June", "July", "August", "September", "October", "November", "December");
 		
 		
-		String path = "C:\\Users\\" + System.getProperty("user.name") + "\\Desktop\\Report";
+		//String path = "C:\\Users\\" + System.getProperty("user.name") + "\\Desktop\\Report";
 
-		String fileName = "\\MONTHLY-EXPENSE-" + months.get(month-1);
+		//String fileName = "\\MONTHLY-EXPENSE-" + months.get(month-1);
 
 
 		List<Expense> monthlyReports = monthlyReportService.getExpense(month);
@@ -285,7 +302,7 @@ public class ReportService {
 		}
 		parameters.put("overAllTotal", String.format("%.2f",total));	
 	
-
+		/*
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 		if (reportFormat.equalsIgnoreCase("html")) {
 			JasperExportManager.exportReportToHtmlFile(jasperPrint, path + fileName + ".html");
@@ -293,6 +310,19 @@ public class ReportService {
 		if (reportFormat.equalsIgnoreCase("pdf")) {
 			JasperExportManager.exportReportToPdfFile(jasperPrint, path + fileName + ".pdf");
 		}
+		*/
+		
+    	byte[] bytes = null;
+    	bytes = JasperRunManager.runReportToPdf(jasperReport, parameters, dataSource);
+    	
+		resp.reset();
+		resp.resetBuffer();
+		resp.setContentType("application/pdf");
+		resp.setContentLength(bytes.length);
+		ServletOutputStream ouputStream = resp.getOutputStream();
+		ouputStream.write(bytes, 0, bytes.length);
+		ouputStream.flush();
+		ouputStream.close();
 
 		return "redirect:/reports/list";
 	}

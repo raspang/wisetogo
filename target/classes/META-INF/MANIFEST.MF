@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
-Implementation-Title: springboot-thymeleaf-security-demo
-Implementation-Version: 1.0-SNAPSHOT
+Implementation-Title: wisetogo
+Implementation-Version: 1.0
 Built-By: Admin
-Implementation-Vendor-Id: com.apress
+Implementation-Vendor-Id: com.nzp
 Build-Jdk: 1.8.0_261
 Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
- ot-starter-parent/springboot-thymeleaf-security-demo
+ ot-starter-parent/wisetogo
 Created-By: Maven Integration for Eclipse
 
